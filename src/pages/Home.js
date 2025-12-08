@@ -43,10 +43,10 @@ const Home = () => {
         <GlassSection colors={{ primary: "green", secondary: "emerald" }} elevation="high">
           <div className="text-center">
             <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-green-900 to-emerald-700 dark:from-green-100 dark:to-emerald-400 bg-clip-text text-transparent mb-4">
-              🌱 Sofie Systems
+              🌱 Heartware
             </h1>
             <p className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto mb-4">
-              Operating System for Harmonic Habitats communities. Empowering sustainable living through integrated systems, collaborative networks, and intelligent resource management.
+              Operating System for Patient-Centered Care communities. Empowering health and wellness through integrated systems, collaborative networks, and intelligent health management.
             </p>
             <p className="text-lg font-semibold bg-gradient-to-r from-green-600 to-emerald-600 dark:from-green-400 dark:to-emerald-400 bg-clip-text text-transparent">
               The benchmark operating system for regenerative living

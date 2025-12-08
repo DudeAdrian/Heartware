@@ -1,0 +1,94 @@
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import ErrorBoundary from "./components/ErrorBoundary";
+import { SofieProvider } from "./context/SofieContext";
+
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Settings from "./pages/Settings";
+import HealthSystemAdmin from "./pages/HealthSystemAdmin";
+import Services from "./pages/Services";
+// Removed: Energy service
+// Removed: Community service
+import PatientWellbeing from "./pages/PatientWellbeing";
+import MedicationInventory from "./pages/MedicationInventory";
+// Removed: HealthMarketplace
+// Removed: Community service
+// Removed: HealthcareBenchmarks
+import KnowledgeBase from "./pages/KnowledgeBase";
+import Governance from "./pages/Governance";
+import Resilience from "./pages/Resilience";
+import Wellness from "./pages/Wellness";
+// Removed: FacilityExpansion
+// Removed: GeneticRegistry
+// Removed: HealthcareNetwork
+import PatientOutcomes from "./pages/PatientOutcomes";
+// Removed: DiseaseManagement
+// Removed: BloodBankMonitor
+// Removed: BiomedicalDatabase
+// Removed: AutomatedCare
+// Removed: ClinicalNutrition
+// Removed: EnvironmentalHealth
+import HealthcareOperations from "./pages/HealthcareOperations";
+import AlertCenter from "./pages/AlertCenter";
+import SetupWizard from "./pages/SetupWizard";
+// Removed: MedicalPlugins
+import MedicalDevices from "./pages/MedicalDevices";
+import HealthOutcomeTracking from "./pages/HealthOutcomeTracking";
+import ClinicalPredictions from "./pages/ClinicalPredictions";
+import SystemShell from "./components/SystemShell";
+
+// Block extensions trying to redefine ethereum
+if (window.ethereum && Object.getOwnPropertyDescriptor(window, 'ethereum')?.configurable === false) {
+  console.warn("Extension attempted to redefine window.ethereum — skipping.");
+}
+
+const App = () => {
+  return (
+    <ErrorBoundary>
+      <SofieProvider>
+        <Router>
+          <SystemShell>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/" element={<Home />} />
+              <Route path="/setup" element={<SetupWizard />} />
+              <Route path="/dashboard" element={<HealthcareOperations />} />
+              <Route path="/alerts" element={<AlertCenter />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/admin" element={<HealthSystemAdmin />} />
+              <Route path="/services" element={<Services />} />
+              <Route path="/services/energy" element={<Energy />} />
+              <Route path="/services/community" element={<Community />} />
+              <Route path="/sustainability" element={<PatientWellbeing />} />
+              <Route path="/inventory" element={<MedicationInventory />} />
+              <Route path="/marketplace" element={<HealthMarketplace />} />
+              <Route path="/communities" element={<PatientCommunity />} />
+              <Route path="/impact" element={<HealthOutcomeTracking />} />
+              <Route path="/knowledge" element={<KnowledgeBase />} />
+              <Route path="/governance" element={<Governance />} />
+              <Route path="/resilience" element={<Resilience />} />
+              <Route path="/wellness" element={<Wellness />} />
+              <Route path="/expansion" element={<FacilityExpansion />} />
+              <Route path="/seedbank" element={<GeneticRegistry />} />
+              <Route path="/global-network" element={<HealthcareNetwork />} />
+              <Route path="/harvest-forecast" element={<PatientOutcomes />} />
+              <Route path="/pest-management" element={<DiseaseManagement />} />
+              <Route path="/water-recycling" element={<BloodBankMonitor />} />
+              <Route path="/aquatic-life" element={<BiomedicalDatabase />} />
+              <Route path="/autopilot" element={<AutomatedCare />} />
+              <Route path="/nutrition-optimization" element={<ClinicalNutrition />} />
+              <Route path="/climate-settings" element={<EnvironmentalHealth />} />
+              <Route path="/plugins" element={<MedicalPlugins />} />
+              <Route path="/iot" element={<MedicalDevices />} />
+              <Route path="/impact-tracking" element={<HealthOutcomeTracking />} />
+              <Route path="/predictions" element={<ClinicalPredictions />} />
+            </Routes>
+          </SystemShell>
+        </Router>
+      </SofieProvider>
+    </ErrorBoundary>
+  );
+};
+
+export default App;
