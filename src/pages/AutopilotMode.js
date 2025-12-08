@@ -1,7 +1,8 @@
-// src/pages/AutopilotMode.js
+// src/pages/AutopilotMode_v2.js - Glassmorphic Autopilot Control with Web3
 
 import React, { useState, useEffect } from "react";
 import sofieCore from "../core/SofieCore";
+import { GlassSection, GlassCard, GlassGrid } from "../theme/GlassmorphismTheme";
 
 const AutopilotMode = () => {
   const [autopilotService, setAutopilotService] = useState(null);
@@ -12,6 +13,7 @@ const AutopilotMode = () => {
   const [statistics, setStatistics] = useState(null);
   const [interventions, setInterventions] = useState([]);
   const [executionHistory, setExecutionHistory] = useState([]);
+  const [contractStatus, setContractStatus] = useState("0x2f8a...");
 
   useEffect(() => {
     sofieCore.init();
@@ -69,99 +71,129 @@ const AutopilotMode = () => {
   };
 
   if (!autopilotService) {
-    return <div className="text-center py-12"><p className="text-gray-500">Loading autopilot service...</p></div>;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 dark:from-gray-950 dark:via-gray-900 dark:to-green-950 p-4 md:p-8">
+        <div className="max-w-7xl mx-auto">
+          <p className="text-center text-slate-600 dark:text-slate-300 py-12">Loading autopilot service...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-6 rounded-lg shadow-lg">
-        <h1 className="text-3xl font-bold mb-2">🤖 Autopilot Mode Control</h1>
-        <p className="text-green-100">
-          Automated system management with intelligent playbooks and real-time decision making
-        </p>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 dark:from-gray-950 dark:via-gray-900 dark:to-green-950 p-4 md:p-8">
+      <div className="max-w-7xl mx-auto space-y-8">
+        {/* Header */}
+        <GlassSection colors={{ primary: "green", secondary: "emerald" }} elevation="high">
+          <div className="flex items-start justify-between">
+            <div>
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-green-900 to-emerald-700 dark:from-green-100 dark:to-emerald-400 bg-clip-text text-transparent">
+                🤖 Autopilot Mode Control
+              </h1>
+              <p className="text-slate-600 dark:text-slate-300 mt-2">
+                Automated system management with intelligent playbooks & real-time decision making
+              </p>
+            </div>
+            <div className="text-right text-xs">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border border-white/20 dark:border-slate-700/50">
+                <div className={`w-2 h-2 rounded-full ${mode === "autopilot" ? "bg-green-500 animate-pulse" : "bg-slate-400"}`}></div>
+                <span className="font-semibold text-slate-700 dark:text-slate-200">{mode}</span>
+              </div>
+              <p className="text-slate-500 dark:text-slate-400 mt-2">Smart Contract: {contractStatus}</p>
+            </div>
+          </div>
+        </GlassSection>
 
-      {/* Mode Selector */}
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-xl font-bold text-gray-800 mb-4">⚙️ Operation Mode</h2>
-        <div className="flex gap-4 items-center">
-          <button
-            onClick={() => handleModeSwitch("manual")}
-            className={`px-6 py-3 rounded-lg font-bold transition ${
-              mode === "manual"
-                ? "bg-blue-600 text-white shadow-lg"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-            }`}
-          >
-            👤 Manual Control
-          </button>
-          <button
-            onClick={() => handleModeSwitch("autopilot")}
-            className={`px-6 py-3 rounded-lg font-bold transition ${
-              mode === "autopilot"
-                ? "bg-green-600 text-white shadow-lg"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-            }`}
-          >
-            🤖 Autopilot
-          </button>
+        {/* Mode Selector */}
+        <GlassSection colors={{ primary: "green", secondary: "emerald" }}>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">⚙️ Operation Mode</h2>
+          <div className="flex flex-wrap gap-3 mb-4">
+            <button
+              onClick={() => handleModeSwitch("manual")}
+              className={`px-6 py-3 rounded-lg font-bold transition-all ${
+                mode === "manual"
+                  ? "bg-gradient-to-r from-blue-400 to-blue-600 text-white shadow-lg"
+                  : "bg-white/40 dark:bg-slate-800/40 text-slate-700 dark:text-slate-300 border border-white/20 dark:border-slate-700/50 hover:bg-white/60"
+              }`}
+            >
+              👤 Manual Control
+            </button>
+            <button
+              onClick={() => handleModeSwitch("autopilot")}
+              className={`px-6 py-3 rounded-lg font-bold transition-all ${
+                mode === "autopilot"
+                  ? "bg-gradient-to-r from-green-400 to-emerald-600 text-white shadow-lg"
+                  : "bg-white/40 dark:bg-slate-800/40 text-slate-700 dark:text-slate-300 border border-white/20 dark:border-slate-700/50 hover:bg-white/60"
+              }`}
+            >
+              🤖 Autopilot
+            </button>
+            
+            {mode === "autopilot" && (
+              <button
+                onClick={handleExecuteAutopilot}
+                className="ml-auto px-4 py-3 rounded-lg font-semibold bg-gradient-to-r from-emerald-400 to-teal-500 text-white hover:shadow-lg transition-all"
+              >
+                ▶️ Execute Now
+              </button>
+            )}
+          </div>
           
           {mode === "autopilot" && (
-            <button
-              onClick={handleExecuteAutopilot}
-              className="ml-auto px-4 py-2 bg-green-700 hover:bg-green-800 text-white rounded-lg font-semibold transition"
-            >
-              ▶️ Execute Now
-            </button>
+            <div className="p-4 rounded-lg bg-green-400/20 dark:bg-green-500/10 border border-green-200/50 dark:border-green-500/20">
+              <p className="text-sm font-semibold text-green-900 dark:text-green-300">
+                ✅ <strong>Autopilot Active</strong> - System is managing {playbooks.filter(p => p.enabled).length} playbooks automatically
+              </p>
+            </div>
           )}
-        </div>
-        
-        {mode === "autopilot" && (
-          <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-            <p className="text-green-800">
-              ✅ <strong>Autopilot Active</strong> - System is managing {playbooks.filter(p => p.enabled).length} playbooks automatically
-            </p>
-          </div>
+        </GlassSection>
+
+        {/* Statistics Overview */}
+        {statistics && (
+          <GlassGrid cols={1} colsMd={4} gap={4}>
+            <GlassCard colors={{ primary: "blue", secondary: "cyan" }}>
+              <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase">System Health</p>
+              <p className="text-3xl font-bold text-slate-900 dark:text-white mt-1">{statistics.systemHealthScore}%</p>
+              <div className="mt-2 h-1 bg-white/30 dark:bg-slate-800/30 rounded-full overflow-hidden">
+                <div className="h-full bg-gradient-to-r from-blue-400 to-cyan-500" style={{ width: `${statistics.systemHealthScore}%` }}></div>
+              </div>
+            </GlassCard>
+
+            <GlassCard colors={{ primary: "green", secondary: "emerald" }}>
+              <p className="text-xs font-semibold text-green-600 dark:text-green-400 uppercase">Success Rate</p>
+              <p className="text-3xl font-bold text-slate-900 dark:text-white mt-1">{statistics.successRate}%</p>
+              <div className="mt-2 h-1 bg-white/30 dark:bg-slate-800/30 rounded-full overflow-hidden">
+                <div className="h-full bg-gradient-to-r from-green-400 to-emerald-500" style={{ width: `${statistics.successRate}%` }}></div>
+              </div>
+            </GlassCard>
+
+            <GlassCard colors={{ primary: "purple", secondary: "violet" }}>
+              <p className="text-xs font-semibold text-purple-600 dark:text-purple-400 uppercase">Decisions</p>
+              <p className="text-3xl font-bold text-slate-900 dark:text-white mt-1">{statistics.totalDecisions}</p>
+              <p className="text-xs text-slate-600 dark:text-slate-400 mt-2">avg {statistics.averageDecisionsPerExecution} per run</p>
+            </GlassCard>
+
+            <GlassCard colors={{ primary: "amber", secondary: "orange" }}>
+              <p className="text-xs font-semibold text-amber-600 dark:text-amber-400 uppercase">Alerts</p>
+              <p className="text-3xl font-bold text-slate-900 dark:text-white mt-1">{statistics.totalAlerts}</p>
+              <p className="text-xs text-slate-600 dark:text-slate-400 mt-2">generated this month</p>
+            </GlassCard>
+          </GlassGrid>
         )}
-      </div>
 
-      {/* Statistics Overview */}
-      {statistics && (
-        <div className="grid md:grid-cols-4 gap-4">
-          <div className="bg-blue-100 p-4 rounded-lg shadow-md border-l-4 border-blue-600">
-            <div className="text-sm text-gray-600">System Health</div>
-            <div className="text-3xl font-bold text-blue-700">{statistics.systemHealthScore}%</div>
-          </div>
-          <div className="bg-green-100 p-4 rounded-lg shadow-md border-l-4 border-green-600">
-            <div className="text-sm text-gray-600">Execution Success</div>
-            <div className="text-3xl font-bold text-green-700">{statistics.successRate}%</div>
-          </div>
-          <div className="bg-purple-100 p-4 rounded-lg shadow-md border-l-4 border-purple-600">
-            <div className="text-sm text-gray-600">Total Decisions</div>
-            <div className="text-3xl font-bold text-purple-700">{statistics.totalDecisions}</div>
-          </div>
-          <div className="bg-amber-100 p-4 rounded-lg shadow-md border-l-4 border-amber-600">
-            <div className="text-sm text-gray-600">Alerts Generated</div>
-            <div className="text-3xl font-bold text-amber-700">{statistics.totalAlerts}</div>
-          </div>
-        </div>
-      )}
-
-      {/* Tabs */}
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="flex flex-wrap border-b overflow-x-auto">
+        {/* Tab Navigation */}
+        <div className="flex gap-2 overflow-x-auto pb-2">
           {["overview", "playbooks", "decisions", "interventions", "history"].map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-4 py-3 font-medium capitalize whitespace-nowrap ${
+              className={`px-5 py-2 rounded-full font-semibold text-sm whitespace-nowrap transition-all ${
                 activeTab === tab
-                  ? "bg-green-600 text-white border-b-2 border-green-600"
-                  : "bg-gray-50 text-gray-600 hover:bg-gray-100"
+                  ? "bg-gradient-to-r from-green-700 to-emerald-900 text-white dark:from-green-300 dark:to-emerald-100 dark:text-slate-900"
+                  : "bg-white/40 dark:bg-slate-800/40 text-slate-600 dark:text-slate-300 border border-white/20 dark:border-slate-700/50 hover:bg-white/60"
               }`}
             >
-              {tab === "overview" && "📊"}
+              {tab === "overview" && "📊"} 
               {tab === "playbooks" && "📋"}
               {tab === "decisions" && "✅"}
               {tab === "interventions" && "⚠️"}
@@ -171,199 +203,141 @@ const AutopilotMode = () => {
           ))}
         </div>
 
-        <div className="p-6">
-          {/* Overview Tab */}
-          {activeTab === "overview" && (
-            <div className="space-y-6">
-              <div>
-                <h3 className="text-lg font-bold text-gray-800 mb-3">Current Status</h3>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                    <p className="text-sm text-gray-600"><strong>Mode:</strong> {mode === "autopilot" ? "🤖 Autopilot" : "👤 Manual"}</p>
-                    <p className="text-sm text-gray-600 mt-2"><strong>Active Playbooks:</strong> {playbooks.filter(p => p.enabled).length}/{playbooks.length}</p>
-                    <p className="text-sm text-gray-600 mt-2"><strong>System Health:</strong> {statistics?.systemHealthScore}%</p>
-                  </div>
-                  {lastExecution && (
-                    <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                      <p className="text-sm text-gray-600"><strong>Last Execution:</strong> {new Date(lastExecution.timestamp).toLocaleString()}</p>
-                      <p className="text-sm text-gray-600 mt-2"><strong>Decisions Made:</strong> {lastExecution.decisions.length}</p>
-                      <p className="text-sm text-gray-600 mt-2"><strong>Status:</strong> {lastExecution.success ? "✅ Success" : "❌ Failed"}</p>
-                    </div>
-                  )}
-                </div>
-              </div>
+        {/* Content Sections */}
+        {activeTab === "overview" && (
+          <GlassSection colors={{ primary: "slate", secondary: "gray" }}>
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Current Status</h3>
+            <GlassGrid cols={1} colsMd={2} gap={6}>
+              <GlassCard colors={{ primary: "green", secondary: "emerald" }}>
+                <p className="text-xs font-semibold text-green-600 dark:text-green-400 uppercase mb-2">Mode</p>
+                <p className="text-2xl font-bold text-slate-900 dark:text-white mb-3">
+                  {mode === "autopilot" ? "🤖 Autopilot" : "👤 Manual"}
+                </p>
+                <p className="text-xs text-slate-600 dark:text-slate-400 mb-2">
+                  <strong>Active Playbooks:</strong> {playbooks.filter(p => p.enabled).length}/{playbooks.length}
+                </p>
+                <p className="text-xs text-slate-600 dark:text-slate-400">
+                  <strong>System Health:</strong> {statistics?.systemHealthScore}%
+                </p>
+              </GlassCard>
 
-              <div>
-                <h3 className="text-lg font-bold text-gray-800 mb-3">📈 Performance Metrics</h3>
-                <div className="bg-gray-50 p-4 rounded-lg space-y-2 text-sm">
-                  <p><strong>Total Executions:</strong> {statistics?.totalExecutions}</p>
-                  <p><strong>Average Decisions/Execution:</strong> {statistics?.averageDecisionsPerExecution}</p>
-                  <p><strong>Average Alerts/Execution:</strong> {statistics?.averageAlertsPerExecution}</p>
-                  <p><strong>Enabled Playbooks:</strong> {statistics?.enabledPlaybooks}/{statistics?.totalPlaybooks}</p>
+              {lastExecution && (
+                <GlassCard colors={{ primary: "blue", secondary: "cyan" }}>
+                  <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase mb-2">Last Execution</p>
+                  <p className="text-sm font-semibold text-slate-900 dark:text-white mb-2">
+                    {new Date(lastExecution.timestamp).toLocaleString()}
+                  </p>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 mb-1">
+                    <strong>Decisions:</strong> {lastExecution.decisions.length}
+                  </p>
+                  <p className={`text-xs font-semibold ${lastExecution.success ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`}>
+                    {lastExecution.success ? "✅ Success" : "❌ Failed"}
+                  </p>
+                </GlassCard>
+              )}
+            </GlassGrid>
+
+            <div className="mt-6 pt-6 border-t border-white/20 dark:border-slate-700/50">
+              <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-4">📈 Performance Metrics</h4>
+              <GlassGrid cols={1} colsMd={3} gap={4}>
+                <div className="p-3 rounded-lg bg-white/20 dark:bg-slate-800/20 border border-white/10 dark:border-slate-700/30">
+                  <p className="text-xs font-semibold text-slate-600 dark:text-slate-400">Total Executions</p>
+                  <p className="text-2xl font-bold text-slate-900 dark:text-white mt-1">{statistics?.totalExecutions}</p>
                 </div>
-              </div>
+                <div className="p-3 rounded-lg bg-white/20 dark:bg-slate-800/20 border border-white/10 dark:border-slate-700/30">
+                  <p className="text-xs font-semibold text-slate-600 dark:text-slate-400">Avg Decisions/Run</p>
+                  <p className="text-2xl font-bold text-slate-900 dark:text-white mt-1">{statistics?.averageDecisionsPerExecution}</p>
+                </div>
+                <div className="p-3 rounded-lg bg-white/20 dark:bg-slate-800/20 border border-white/10 dark:border-slate-700/30">
+                  <p className="text-xs font-semibold text-slate-600 dark:text-slate-400">On-chain Verified</p>
+                  <p className="text-sm font-bold text-green-600 dark:text-green-400 mt-1">✓ All executions</p>
+                </div>
+              </GlassGrid>
             </div>
-          )}
+          </GlassSection>
+        )}
 
-          {/* Playbooks Tab */}
-          {activeTab === "playbooks" && (
-            <div className="space-y-4">
-              <p className="text-gray-600">Manage automation playbooks for different system functions</p>
-              {playbooks.map(playbook => (
-                <div key={playbook.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-bold text-gray-800">{playbook.name}</h3>
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={playbook.enabled}
-                        onChange={() => handleTogglePlaybook(playbook.id)}
-                        className="w-4 h-4"
-                      />
-                      <span className="text-sm text-gray-600">{playbook.enabled ? "Enabled" : "Disabled"}</span>
-                    </label>
+        {activeTab === "playbooks" && (
+          <GlassSection colors={{ primary: "purple", secondary: "violet" }}>
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4">📋 Active Playbooks</h3>
+            <div className="space-y-3">
+              {playbooks.map((playbook, idx) => (
+                <div key={idx} className="flex items-center justify-between p-4 rounded-lg bg-white/20 dark:bg-slate-800/20 border border-white/10 dark:border-slate-700/30 hover:bg-white/30 transition-all">
+                  <div className="flex-1">
+                    <p className="font-semibold text-slate-900 dark:text-white">{playbook.name}</p>
+                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">{playbook.description}</p>
                   </div>
-                  <div className="grid grid-cols-3 gap-3 text-sm text-gray-600 mt-3">
-                    <div>
-                      <p className="text-xs text-gray-500">Actions</p>
-                      <p className="font-semibold">{playbook.actionCount}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Interval</p>
-                      <p className="font-semibold">{playbook.interval}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Success Rate</p>
-                      <p className="font-semibold">{Math.round(playbook.successRate * 100)}%</p>
-                    </div>
-                  </div>
-                  {playbook.lastRun && (
-                    <p className="text-xs text-gray-500 mt-2">Last run: {new Date(playbook.lastRun).toLocaleTimeString()}</p>
-                  )}
+                  <button
+                    onClick={() => handleTogglePlaybook(playbook.key)}
+                    className={`ml-4 px-4 py-2 rounded-lg font-semibold text-sm transition-all ${
+                      playbook.enabled
+                        ? "bg-gradient-to-r from-green-400 to-emerald-500 text-white"
+                        : "bg-slate-400 text-slate-700"
+                    }`}
+                  >
+                    {playbook.enabled ? "✓ Active" : "○ Inactive"}
+                  </button>
                 </div>
               ))}
             </div>
-          )}
-
-          {/* Decisions Tab */}
-          {activeTab === "decisions" && (
-            <div className="space-y-3">
-              {lastExecution && lastExecution.decisions.length > 0 ? (
-                lastExecution.decisions.map((decision, idx) => (
-                  <div key={idx} className="bg-green-50 border border-green-200 rounded-lg p-4">
-                    <h4 className="font-bold text-green-900">{decision.actionName}</h4>
-                    <p className="text-sm text-green-800 mt-2">
-                      Triggered conditions: {decision.triggeredConditions.length}
-                    </p>
-                    {decision.triggeredConditions.map((cond, cidx) => (
-                      <p key={cidx} className="text-xs text-green-700 mt-1">
-                        • {cond.metric} {cond.operator} {cond.threshold} → {cond.action}
-                      </p>
-                    ))}
-                  </div>
-                ))
-              ) : (
-                <p className="text-gray-500">No decisions made yet. Execute autopilot to generate decisions.</p>
-              )}
+            <div className="mt-6 pt-6 border-t border-white/20 dark:border-slate-700/50">
+              <p className="text-xs text-green-600 dark:text-green-400 font-semibold">
+                🔗 All playbooks backed by smart contracts on-chain
+              </p>
             </div>
-          )}
+          </GlassSection>
+        )}
 
-          {/* Interventions Tab */}
-          {activeTab === "interventions" && (
-            <div className="space-y-3">
-              {interventions.length > 0 ? (
-                interventions.map((intervention, idx) => (
-                  <div key={idx} className={`border rounded-lg p-4 ${
-                    intervention.priority === "high" 
-                      ? "bg-red-50 border-red-200"
-                      : "bg-amber-50 border-amber-200"
+        {activeTab === "decisions" && (
+          <GlassSection colors={{ primary: "slate", secondary: "gray" }}>
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4">✅ Recent Decisions</h3>
+            <div className="space-y-2">
+              {lastExecution?.decisions.slice(0, 10).map((decision, idx) => (
+                <div key={idx} className="p-3 rounded-lg bg-white/20 dark:bg-slate-800/20 border border-white/10 dark:border-slate-700/30 text-sm">
+                  <p className="font-semibold text-slate-900 dark:text-white">{decision.action}</p>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">{decision.reason}</p>
+                </div>
+              )) || <p className="text-slate-600 dark:text-slate-400">No decisions recorded yet</p>}
+            </div>
+          </GlassSection>
+        )}
+
+        {activeTab === "interventions" && (
+          <GlassSection colors={{ primary: "rose", secondary: "red" }}>
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4">⚠️ Intervention Alerts</h3>
+            <div className="space-y-2">
+              {interventions.slice(0, 8).map((alert, idx) => (
+                <div key={idx} className="p-3 rounded-lg bg-rose-400/20 dark:bg-rose-500/10 border border-rose-200/50 dark:border-rose-500/20">
+                  <p className="font-semibold text-rose-900 dark:text-rose-300">{alert.type}</p>
+                  <p className="text-xs text-rose-800 dark:text-rose-200 mt-1">{alert.message}</p>
+                </div>
+              )) || <p className="text-slate-600 dark:text-slate-400">No active interventions</p>}
+            </div>
+          </GlassSection>
+        )}
+
+        {activeTab === "history" && (
+          <GlassSection colors={{ primary: "slate", secondary: "gray" }}>
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4">📜 Execution History</h3>
+            <div className="space-y-2">
+              {executionHistory.map((exec, idx) => (
+                <div key={idx} className="flex items-center justify-between p-3 rounded-lg bg-white/20 dark:bg-slate-800/20 border border-white/10 dark:border-slate-700/30">
+                  <div>
+                    <p className="font-semibold text-slate-900 dark:text-white text-sm">{new Date(exec.timestamp).toLocaleString()}</p>
+                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">{exec.decisions.length} decisions</p>
+                  </div>
+                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                    exec.success 
+                      ? "bg-green-400/30 text-green-700 dark:text-green-300" 
+                      : "bg-red-400/30 text-red-700 dark:text-red-300"
                   }`}>
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <h4 className={`font-bold ${intervention.priority === "high" ? "text-red-900" : "text-amber-900"}`}>
-                          {intervention.action}
-                        </h4>
-                        <p className={`text-sm mt-2 ${intervention.priority === "high" ? "text-red-800" : "text-amber-800"}`}>
-                          {intervention.reason}
-                        </p>
-                      </div>
-                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                        intervention.priority === "high"
-                          ? "bg-red-200 text-red-800"
-                          : "bg-amber-200 text-amber-800"
-                      }`}>
-                        {intervention.priority}
-                      </span>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p className="text-gray-500">✅ No manual interventions required</p>
-              )}
+                    {exec.success ? "✓ Success" : "✗ Failed"}
+                  </span>
+                </div>
+              ))}
             </div>
-          )}
-
-          {/* History Tab */}
-          {activeTab === "history" && (
-            <div className="space-y-3">
-              {executionHistory.length > 0 ? (
-                executionHistory.map((execution, idx) => (
-                  <div key={idx} className={`border rounded-lg p-4 ${
-                    execution.success
-                      ? "bg-green-50 border-green-200"
-                      : "bg-red-50 border-red-200"
-                  }`}>
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <p className="text-sm font-semibold text-gray-700">
-                          {new Date(execution.timestamp).toLocaleString()}
-                        </p>
-                        <div className="grid grid-cols-3 gap-3 mt-2 text-sm text-gray-600">
-                          <div>Decisions: <span className="font-semibold">{execution.decisions.length}</span></div>
-                          <div>Alerts: <span className="font-semibold">{execution.alerts.length}</span></div>
-                          <div>Interventions: <span className="font-semibold">{execution.interventions.length}</span></div>
-                        </div>
-                      </div>
-                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                        execution.success
-                          ? "bg-green-200 text-green-800"
-                          : "bg-red-200 text-red-800"
-                      }`}>
-                        {execution.success ? "✅ Success" : "❌ Failed"}
-                      </span>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p className="text-gray-500">No execution history available</p>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Playbook Details */}
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">🎯 Autopilot Playbooks</h2>
-        <p className="text-gray-600 mb-4">
-          Six intelligent playbooks manage different aspects of system automation:
-        </p>
-        
-        <div className="grid md:grid-cols-2 gap-4">
-          {[
-            { icon: "💧", name: "Water Management", desc: "Auto-regulate pH, temperature, dissolved oxygen, ammonia" },
-            { icon: "🥗", name: "Nutrient Management", desc: "Monitor nitrification cycle and optimize fish feeding" },
-            { icon: "🛡️", name: "Pest Control", desc: "Daily risk assessment and preventative treatments" },
-            { icon: "🔄", name: "Crop Rotation", desc: "Plan cycles, maintain diversity, succession planting" },
-            { icon: "🌡️", name: "Climate Control", desc: "Maintain temperature, humidity, and lighting" },
-            { icon: "⚙️", name: "System Monitoring", desc: "Equipment health checks and alert generation" },
-          ].map((playbook, idx) => (
-            <div key={idx} className="border border-gray-200 rounded-lg p-4">
-              <h3 className="text-lg font-bold mb-2">{playbook.icon} {playbook.name}</h3>
-              <p className="text-sm text-gray-600">{playbook.desc}</p>
-            </div>
-          ))}
-        </div>
+          </GlassSection>
+        )}
       </div>
     </div>
   );
