@@ -37,10 +37,10 @@ export const QuantumParams = {
     stack: 'backdrop-blur-3xl',        // Stacked blur for enhanced depth
   },
 
-  // Transparency Spectrum - Wave function collapse (ENHANCED: Ultra-clear)
+  // Transparency Spectrum - Wave function collapse (ENHANCED: More vibrant with color showing)
   opacity: {
-    crystal: 'bg-white/2 dark:bg-black/2',      // 2% - Crystal clear
-    ultraClear: 'bg-white/3 dark:bg-black/3',   // 3% - Ultra transparent
+    crystal: 'bg-white/1 dark:bg-black/1',      // 1% - Crystal clear (shows color through)
+    ultraClear: 'bg-white/2 dark:bg-black/2',   // 2% - Ultra transparent (color visible)
     quantum: 'bg-white/5 dark:bg-black/5',      // 5% - Pure superposition
     ethereal: 'bg-white/8 dark:bg-black/8',     // 8% - Near-transparent
     veil: 'bg-white/12 dark:bg-black/12',       // 12% - Semi-transparent
@@ -61,81 +61,88 @@ export const QuantumParams = {
     clear: 'border-white/40 dark:border-white/30',
   },
 
-  // Edge Halos - Color-shifted borders with quantum glow (Healthcare-specific)
+  // Edge Halos - NEON Color-shifted borders with quantum glow (VIBRANT)
   edgeHalo: {
-    critical: 'shadow-[0_0_20px_rgba(220,38,38,0.4),0_0_40px_rgba(220,38,38,0.2),inset_0_0_20px_rgba(220,38,38,0.1)]',
-    warning: 'shadow-[0_0_20px_rgba(234,88,12,0.4),0_0_40px_rgba(234,88,12,0.2),inset_0_0_20px_rgba(234,88,12,0.1)]',
-    caution: 'shadow-[0_0_20px_rgba(250,204,21,0.4),0_0_40px_rgba(250,204,21,0.2),inset_0_0_20px_rgba(250,204,21,0.1)]',
-    normal: 'shadow-[0_0_20px_rgba(16,185,129,0.4),0_0_40px_rgba(16,185,129,0.2),inset_0_0_20px_rgba(16,185,129,0.1)]',
-    info: 'shadow-[0_0_20px_rgba(14,165,233,0.4),0_0_40px_rgba(14,165,233,0.2),inset_0_0_20px_rgba(14,165,233,0.1)]',
-    insight: 'shadow-[0_0_20px_rgba(139,92,246,0.4),0_0_40px_rgba(139,92,246,0.2),inset_0_0_20px_rgba(139,92,246,0.1)]',
-    care: 'shadow-[0_0_20px_rgba(236,72,153,0.4),0_0_40px_rgba(236,72,153,0.2),inset_0_0_20px_rgba(236,72,153,0.1)]',
+    critical: 'shadow-[0_0_30px_rgba(255,0,85,0.7),0_0_60px_rgba(255,0,85,0.4),inset_0_0_20px_rgba(255,0,85,0.2)]',
+    warning: 'shadow-[0_0_30px_rgba(255,102,0,0.7),0_0_60px_rgba(255,102,0,0.4),inset_0_0_20px_rgba(255,102,0,0.2)]',
+    caution: 'shadow-[0_0_30px_rgba(255,255,0,0.7),0_0_60px_rgba(255,255,0,0.4),inset_0_0_20px_rgba(255,255,0,0.2)]',
+    normal: 'shadow-[0_0_30px_rgba(0,255,136,0.7),0_0_60px_rgba(0,255,136,0.4),inset_0_0_20px_rgba(0,255,136,0.2)]',
+    info: 'shadow-[0_0_30px_rgba(0,187,255,0.7),0_0_60px_rgba(0,187,255,0.4),inset_0_0_20px_rgba(0,187,255,0.2)]',
+    insight: 'shadow-[0_0_30px_rgba(170,76,255,0.7),0_0_60px_rgba(170,76,255,0.4),inset_0_0_20px_rgba(170,76,255,0.2)]',
+    care: 'shadow-[0_0_30px_rgba(255,0,170,0.7),0_0_60px_rgba(255,0,170,0.4),inset_0_0_20px_rgba(255,0,170,0.2)]',
   },
 
-  // Healthcare Color States - Clinical mappings
+  // NEON Healthcare Color States - Vibrant clinical mappings with enhanced glow
   chakra: {
     critical: {
-      bg: 'bg-red-600/20',
-      text: 'text-red-700 dark:text-red-300',
-      border: 'border-red-600/40',
-      glow: 'from-red-600/30 to-red-400/10',
+      bg: 'bg-red-600/30',
+      text: 'text-red-400 dark:text-red-200',
+      border: 'border-red-500/60',
+      glow: 'from-red-500/50 to-red-400/20',
       edgeBorder: 'border-transparent',
-      edgeGradient: 'to-red-600/60 from-red-600/20',
-      hex: '#DC2626',
+      edgeGradient: 'to-red-500/80 from-red-500/40',
+      neonGlow: 'glow-red-500',
+      hex: '#FF0055',
     },
     warning: {
-      bg: 'bg-orange-600/20',
-      text: 'text-orange-700 dark:text-orange-300',
-      border: 'border-orange-600/40',
-      glow: 'from-orange-600/30 to-orange-400/10',
+      bg: 'bg-orange-600/30',
+      text: 'text-orange-400 dark:text-orange-200',
+      border: 'border-orange-500/60',
+      glow: 'from-orange-500/50 to-orange-400/20',
       edgeBorder: 'border-transparent',
-      edgeGradient: 'to-orange-600/60 from-orange-600/20',
-      hex: '#EA580C',
+      edgeGradient: 'to-orange-500/80 from-orange-500/40',
+      neonGlow: 'glow-orange-500',
+      hex: '#FF6600',
     },
     caution: {
-      bg: 'bg-yellow-500/20',
-      text: 'text-yellow-700 dark:text-yellow-300',
-      border: 'border-yellow-600/40',
-      glow: 'from-yellow-600/30 to-yellow-400/10',
+      bg: 'bg-yellow-500/30',
+      text: 'text-yellow-300 dark:text-yellow-200',
+      border: 'border-yellow-400/60',
+      glow: 'from-yellow-400/50 to-yellow-300/20',
       edgeBorder: 'border-transparent',
-      edgeGradient: 'to-yellow-600/60 from-yellow-600/20',
-      hex: '#FACC15',
+      edgeGradient: 'to-yellow-400/80 from-yellow-400/40',
+      neonGlow: 'glow-yellow-400',
+      hex: '#FFFF00',
     },
     normal: {
-      bg: 'bg-emerald-600/20',
-      text: 'text-emerald-700 dark:text-emerald-300',
-      border: 'border-emerald-600/40',
-      glow: 'from-emerald-600/30 to-emerald-400/10',
+      bg: 'bg-emerald-500/30',
+      text: 'text-emerald-300 dark:text-emerald-200',
+      border: 'border-emerald-400/60',
+      glow: 'from-emerald-400/50 to-emerald-300/20',
       edgeBorder: 'border-transparent',
-      edgeGradient: 'to-emerald-600/60 from-emerald-600/20',
-      hex: '#10B981',
+      edgeGradient: 'to-emerald-400/80 from-emerald-400/40',
+      neonGlow: 'glow-emerald-400',
+      hex: '#00FF88',
     },
     info: {
-      bg: 'bg-sky-600/20',
-      text: 'text-sky-700 dark:text-sky-300',
-      border: 'border-sky-600/40',
-      glow: 'from-sky-600/30 to-sky-400/10',
+      bg: 'bg-cyan-500/30',
+      text: 'text-cyan-300 dark:text-cyan-200',
+      border: 'border-cyan-400/60',
+      glow: 'from-cyan-400/50 to-cyan-300/20',
       edgeBorder: 'border-transparent',
-      edgeGradient: 'to-sky-600/60 from-sky-600/20',
-      hex: '#0EA5E9',
+      edgeGradient: 'to-cyan-400/80 from-cyan-400/40',
+      neonGlow: 'glow-cyan-400',
+      hex: '#00BBFF',
     },
     insight: {
-      bg: 'bg-purple-600/20',
-      text: 'text-purple-700 dark:text-purple-300',
-      border: 'border-purple-600/40',
-      glow: 'from-purple-600/30 to-purple-400/10',
+      bg: 'bg-violet-600/30',
+      text: 'text-violet-300 dark:text-violet-200',
+      border: 'border-violet-500/60',
+      glow: 'from-violet-500/50 to-violet-400/20',
       edgeBorder: 'border-transparent',
-      edgeGradient: 'to-purple-600/60 from-purple-600/20',
-      hex: '#8B5CF6',
+      edgeGradient: 'to-violet-500/80 from-violet-500/40',
+      neonGlow: 'glow-violet-500',
+      hex: '#AA4CFF',
     },
     care: {
-      bg: 'bg-pink-600/20',
-      text: 'text-pink-700 dark:text-pink-300',
-      border: 'border-pink-600/40',
-      glow: 'from-pink-600/30 to-pink-400/10',
+      bg: 'bg-pink-600/30',
+      text: 'text-pink-300 dark:text-pink-200',
+      border: 'border-pink-500/60',
+      glow: 'from-pink-500/50 to-pink-400/20',
       edgeBorder: 'border-transparent',
-      edgeGradient: 'to-pink-600/60 from-pink-600/20',
-      hex: '#EC4899',
+      edgeGradient: 'to-pink-500/80 from-pink-500/40',
+      neonGlow: 'glow-pink-500',
+      hex: '#FF00AA',
     },
   },
 
