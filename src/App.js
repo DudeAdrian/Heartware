@@ -1,3 +1,5 @@
+import HerbalLibrary from './pages/HerbalLibrary';
+import PersonalHerbalJournal from './pages/PersonalHerbalJournal';
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ErrorBoundary from "./components/ErrorBoundary";
@@ -55,6 +57,7 @@ const App = () => {
               {/* AI Companion - Heart-centered guidance */}
               <Route path="/ai-companion" element={<AIChat />} />
               <Route path="/chat" element={<AIChat />} />
+                        <Route path="/herbal-library" element={<HerbalLibrary />} />
               
               {/* Health Management */}
               <Route path="/wellbeing" element={<PatientWellbeing />} />
@@ -64,6 +67,7 @@ const App = () => {
               <Route path="/tracking" element={<HealthOutcomeTracking />} />
               <Route path="/predictions" element={<ClinicalPredictions />} />
               <Route path="/wellness" element={<Wellness />} />
+              <Route path="/herbal-journal" element={<PersonalHerbalJournal />} />
               
               {/* System */}
               <Route path="/alerts" element={<AlertCenter />} />

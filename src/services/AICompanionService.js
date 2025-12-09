@@ -43,6 +43,75 @@ class AICompanionService {
         reject(error);
       }
     });
+
+    /**
+     * Get herbal medicine recommendations
+     * Integrates ancient indigenous wisdom with personal health profile
+     */
+    async getHerbalConsultation(condition, userProfile = {}) {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL || 'http://localhost:3001'}/api/ai/herbal-consultation`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify({
+            condition,
+            userProfile: {
+              ...userProfile,
+              conversationHistory: this.conversationHistory.slice(-3)
+            }
+          })
+        });
+
+        const data = await response.json();
+      
+        if (data.success) {
+          // Add to conversation history for context
+          this.conversationHistory.push({
+            role: 'assistant',
+            content: `Herbal consultation for ${condition}`,
+            herbalRecommendations: data.data,
+            timestamp: new Date()
+          });
+          return data.data;
+        }
+      
+        throw new Error(data.message || 'Failed to get herbal consultation');
+      } catch (error) {
+        console.error('Error getting herbal consultation:', error);
+        throw error;
+      }
+    }
+
+    /**
+     * Search herbal library with filters
+     */
+    async searchHerbs(filters = {}) {
+      try {
+        const params = new URLSearchParams();
+        if (filters.search) params.append('search', filters.search);
+        if (filters.tradition) params.append('tradition', filters.tradition);
+        if (filters.condition) params.append('condition', filters.condition);
+        if (filters.safeForPregnancy) params.append('safeForPregnancy', 'true');
+
+        const response = await fetch(
+          `${process.env.REACT_APP_BACKEND_URL || 'http://localhost:3001'}/api/herbs?${params}`,
+          {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+          }
+        );
+
+        const data = await response.json();
+        return data.success ? data.data : [];
+      } catch (error) {
+        console.error('Error searching herbs:', error);
+        return [];
+      }
+    }
   }
 
   /**

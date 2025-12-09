@@ -7,6 +7,8 @@ const AIChat = () => {
   const [inputMessage, setInputMessage] = useState('');
   const [isConnected, setIsConnected] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+    const [showHerbalModal, setShowHerbalModal] = useState(false);
+    const [herbalCondition, setHerbalCondition] = useState('');
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -73,7 +75,8 @@ const AIChat = () => {
     { icon: '🧘', label: 'Heart Space Meditation', action: () => aiCompanion.getHeartSpaceGuidance() },
     { icon: '📜', label: 'Ancient Wisdom', action: () => aiCompanion.getWisdomGuidance('healing') },
     { icon: '💭', label: 'Reflection Support', action: () => aiCompanion.getPsychologicalSupport('contemplative', 'seeking guidance') },
-    { icon: '🌟', label: 'Health Insights', action: () => aiCompanion.getHealthInsights({ mood: 'balanced', energy: 'moderate' }) }
+    { icon: '🌟', label: 'Health Insights', action: () => aiCompanion.getHealthInsights({ mood: 'balanced', energy: 'moderate' }) },
+    { icon: '🌿', label: 'Herbal Guidance', action: () => setShowHerbalModal(true) }
   ];
 
   return (
@@ -108,6 +111,45 @@ const AIChat = () => {
               <div className="text-2xl mb-1">{action.icon}</div>
               <div className="text-xs text-gray-300">{action.label}</div>
             </GlassCard>
+
+                  {/* Herbal Consultation Modal */}
+                  {showHerbalModal && (
+                    <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
+                      <GlassCard className="p-6 max-w-md w-full">
+                        <h3 className="text-2xl font-bold text-green-400 mb-4">🌿 Herbal Guidance</h3>
+                        <p className="text-gray-300 mb-4">
+                          What condition or concern would you like herbal recommendations for?
+                        </p>
+                        <input
+                          type="text"
+                          value={herbalCondition}
+                          onChange={(e) => setHerbalCondition(e.target.value)}
+                          onKeyPress={(e) => e.key === 'Enter' && handleHerbalConsultation()}
+                          placeholder="e.g., anxiety, digestion, sleep, immunity..."
+                          className="w-full bg-gray-800/50 border border-gray-600 rounded-lg p-3 text-gray-200 placeholder-gray-500 focus:outline-none focus:border-green-500 mb-4"
+                          autoFocus
+                        />
+                        <div className="flex gap-3">
+                          <button
+                            onClick={() => {
+                              setShowHerbalModal(false);
+                              setHerbalCondition('');
+                            }}
+                            className="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-lg"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            onClick={handleHerbalConsultation}
+                            disabled={!herbalCondition.trim()}
+                            className="flex-1 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white rounded-lg disabled:opacity-50"
+                          >
+                            Get Guidance
+                          </button>
+                        </div>
+                      </GlassCard>
+                    </div>
+                  )}
           ))}
         </div>
 
@@ -150,6 +192,32 @@ const AIChat = () => {
                     <div className="mt-3 pt-3 border-t border-gray-600">
                       <div className="text-xs text-pink-300 mb-1">💖 Heart Space</div>
                       <div className="text-sm text-gray-300">{msg.heartSpace}</div>
+                  
+                                      {msg.herbalRecommendations && (
+                                        <div className="mt-3 pt-3 border-t border-gray-600">
+                                          <div className="text-xs text-green-300 mb-2">🌿 Herbal Recommendations</div>
+                                          <div className="space-y-2">
+                                            {msg.herbalRecommendations.map((herb, i) => (
+                                              <div key={i} className="bg-green-500/10 rounded-lg p-2">
+                                                <div className="font-semibold text-green-300 text-sm">{herb.commonName}</div>
+                                                <div className="text-xs text-gray-400 italic">{herb.scientificName}</div>
+                                                {herb.energeticProperties && (
+                                                  <div className="text-xs text-gray-300 mt-1">{herb.energeticProperties}</div>
+                                                )}
+                                                {herb.dosageGuidelines && (
+                                                  <div className="text-xs text-gray-400 mt-1">Dosage: {herb.dosageGuidelines}</div>
+                                                )}
+                                              </div>
+                                            ))}
+                                          </div>
+                                          <button
+                                            onClick={() => window.location.href = '/herbal-library'}
+                                            className="mt-2 text-xs text-green-400 hover:text-green-300"
+                                          >
+                                            View Full Herbal Library →
+                                          </button>
+                                        </div>
+                                      )}
                     </div>
                   )}
                   
@@ -205,3 +273,30 @@ const AIChat = () => {
 };
 
 export default AIChat;
+
+  const handleHerbalConsultation = async () => {
+    if (!herbalCondition.trim()) return;
+    
+    setShowHerbalModal(false);
+    setIsTyping(true);
+    
+    try {
+      const recommendations = await aiCompanion.getHerbalConsultation(herbalCondition);
+      
+      setMessages(prev => [...prev, {
+        role: 'ai',
+        content: `Based on ancient wisdom, here are herbal recommendations for ${herbalCondition}:`,
+        herbalRecommendations: recommendations,
+        timestamp: new Date()
+      }]);
+    } catch (error) {
+      setMessages(prev => [...prev, {
+        role: 'ai',
+        content: 'I apologize, I encountered an issue accessing the herbal library. Please try again.',
+        timestamp: new Date()
+      }]);
+    } finally {
+      setIsTyping(false);
+      setHerbalCondition('');
+    }
+  };
