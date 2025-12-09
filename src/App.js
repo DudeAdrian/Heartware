@@ -1,6 +1,4 @@
-import HerbalLibrary from './pages/HerbalLibrary';
-import PersonalHerbalJournal from './pages/PersonalHerbalJournal';
-import React from "react";
+import RegionProvider from "./context/RegionContext";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { SofieProvider } from "./context/SofieContext";
@@ -13,7 +11,6 @@ import SetupWizard from "./pages/SetupWizard";
 
 // Personal Health Pages
 import HealthcareOperations from "./pages/HealthcareOperations"; // Personal Dashboard
-import AIChat from "./pages/AIChat"; // AI Companion
 import PatientWellbeing from "./pages/PatientWellbeing"; // Self-sufficiency metrics
 import MedicationInventory from "./pages/MedicationInventory"; // Medication tracking
 import PatientOutcomes from "./pages/PatientOutcomes"; // Health outcomes
@@ -21,6 +18,8 @@ import MedicalDevices from "./pages/MedicalDevices"; // IoT health devices
 import HealthOutcomeTracking from "./pages/HealthOutcomeTracking"; // Impact tracking
 import ClinicalPredictions from "./pages/ClinicalPredictions"; // Health predictions
 import Wellness from "./pages/Wellness"; // Holistic wellness
+import HerbalLibrary from "./pages/HerbalLibrary"; // Herb reference
+import PersonalHerbalJournal from "./pages/PersonalHerbalJournal"; // Herbal journal
 import AlertCenter from "./pages/AlertCenter";
 import KnowledgeBase from "./pages/KnowledgeBase";
 
@@ -32,7 +31,7 @@ import Resilience from "./pages/Resilience";
 // Services (simplified)
 import Services from "./pages/Services";
 
-import SystemShell from "./components/SystemShell";
+import SystemShell from "./components/SystemShellTouchOS";
 import Map from "./pages/Map";
 
 // Block extensions trying to redefine ethereum
@@ -44,8 +43,9 @@ const App = () => {
   return (
     <ErrorBoundary>
       <SofieProvider>
-        <Router>
-          <SystemShell>
+        <RegionProvider>
+          <Router>
+            <SystemShell>
             <Routes>
               <Route path="/login" element={<Login />} />
               <Route path="/" element={<Home />} />
@@ -53,11 +53,6 @@ const App = () => {
               
               {/* Personal Health Dashboard */}
               <Route path="/dashboard" element={<HealthcareOperations />} />
-              
-              {/* AI Companion - Heart-centered guidance */}
-              <Route path="/ai-companion" element={<AIChat />} />
-              <Route path="/chat" element={<AIChat />} />
-                        <Route path="/herbal-library" element={<HerbalLibrary />} />
               
               {/* Health Management */}
               <Route path="/wellbeing" element={<PatientWellbeing />} />
@@ -83,6 +78,7 @@ const App = () => {
             </Routes>
           </SystemShell>
         </Router>
+        </RegionProvider>
       </SofieProvider>
     </ErrorBoundary>
   );
