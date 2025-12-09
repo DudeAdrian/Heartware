@@ -1,24 +1,23 @@
 /**
- * Quantum Glassmorphism Theme - Enhanced Edition
- * HEARTWARE VARIANT - Healthcare-specific color mappings
+ * Quantum Glassmorphism Theme - Healthcare Edition (Enhanced)
  * 
  * Quantum Visual Parameters:
  * - Superposition: Multiple blur layers create quantum superposition effect
- * - Entanglement: Color interactions across chakra spectrum
+ * - Entanglement: Color interactions across healthcare spectrum
  * - Wave Function: Smooth transitions between opacity states
  * - Uncertainty Principle: Micro-interactions reveal depth
  * - Observation Effect: Hover states collapse to specific states
  * 
- * Chakra Color System (7 Energy Centers) with Healthcare Mapping:
- * 1. Root (Muladhara):     #DC2626 - Critical/Emergency Alert
- * 2. Sacral (Svadhisthana): #EA580C - Warning/High Priority
- * 3. Solar (Manipura):      #FACC15 - Caution/Moderate Alert
- * 4. Heart (Anahata):       #10B981 - Healthy/Normal Status
- * 5. Throat (Vishuddha):    #0EA5E9 - Information/Communication
- * 6. Third Eye (Ajna):      #8B5CF6 - Insight/Analytics
- * 7. Crown (Sahasrara):     #EC4899 - Compassion/Care Focus
+ * Healthcare Color System (7 Clinical States):
+ * 1. Critical (Root):        #DC2626 - Emergency Alert Red
+ * 2. Warning (Sacral):       #EA580C - High Priority Orange
+ * 3. Caution (Solar):        #FACC15 - Moderate Alert Yellow
+ * 4. Normal (Heart):         #10B981 - Healthy Status Green
+ * 5. Info (Throat):          #0EA5E9 - Information Blue
+ * 6. Insight (Third Eye):    #8B5CF6 - Analytics/Diagnosis Purple
+ * 7. Care (Crown):           #EC4899 - Compassion/Wellness Pink
  * 
- * WCAG AAA Compliance + Deep Transparency
+ * WCAG AAA Compliance + Ultra-Deep Transparency + Color-Hued Edges
  */
 
 import React, { useEffect, useRef } from 'react';
@@ -35,10 +34,13 @@ export const QuantumParams = {
     medium: 'backdrop-blur-xl',        // 20px - Observable reality
     light: 'backdrop-blur-lg',         // 12px - Surface level
     minimal: 'backdrop-blur-md',       // 8px - Initial observation
+    stack: 'backdrop-blur-3xl',        // Stacked blur for enhanced depth
   },
 
-  // Transparency Spectrum - Wave function collapse
+  // Transparency Spectrum - Wave function collapse (ENHANCED: Ultra-clear)
   opacity: {
+    crystal: 'bg-white/2 dark:bg-black/2',      // 2% - Crystal clear
+    ultraClear: 'bg-white/3 dark:bg-black/3',   // 3% - Ultra transparent
     quantum: 'bg-white/5 dark:bg-black/5',      // 5% - Pure superposition
     ethereal: 'bg-white/8 dark:bg-black/8',     // 8% - Near-transparent
     veil: 'bg-white/12 dark:bg-black/12',       // 12% - Semi-transparent
@@ -59,63 +61,81 @@ export const QuantumParams = {
     clear: 'border-white/40 dark:border-white/30',
   },
 
-  // Chakra Colors - Energy center alignment (Healthcare-mapped)
+  // Edge Halos - Color-shifted borders with quantum glow (Healthcare-specific)
+  edgeHalo: {
+    critical: 'shadow-[0_0_20px_rgba(220,38,38,0.4),0_0_40px_rgba(220,38,38,0.2),inset_0_0_20px_rgba(220,38,38,0.1)]',
+    warning: 'shadow-[0_0_20px_rgba(234,88,12,0.4),0_0_40px_rgba(234,88,12,0.2),inset_0_0_20px_rgba(234,88,12,0.1)]',
+    caution: 'shadow-[0_0_20px_rgba(250,204,21,0.4),0_0_40px_rgba(250,204,21,0.2),inset_0_0_20px_rgba(250,204,21,0.1)]',
+    normal: 'shadow-[0_0_20px_rgba(16,185,129,0.4),0_0_40px_rgba(16,185,129,0.2),inset_0_0_20px_rgba(16,185,129,0.1)]',
+    info: 'shadow-[0_0_20px_rgba(14,165,233,0.4),0_0_40px_rgba(14,165,233,0.2),inset_0_0_20px_rgba(14,165,233,0.1)]',
+    insight: 'shadow-[0_0_20px_rgba(139,92,246,0.4),0_0_40px_rgba(139,92,246,0.2),inset_0_0_20px_rgba(139,92,246,0.1)]',
+    care: 'shadow-[0_0_20px_rgba(236,72,153,0.4),0_0_40px_rgba(236,72,153,0.2),inset_0_0_20px_rgba(236,72,153,0.1)]',
+  },
+
+  // Healthcare Color States - Clinical mappings
   chakra: {
-    root: {
+    critical: {
       bg: 'bg-red-600/20',
       text: 'text-red-700 dark:text-red-300',
       border: 'border-red-600/40',
       glow: 'from-red-600/30 to-red-400/10',
+      edgeBorder: 'border-transparent',
+      edgeGradient: 'to-red-600/60 from-red-600/20',
       hex: '#DC2626',
-      clinical: 'Critical Alert / Emergency',
     },
-    sacral: {
+    warning: {
       bg: 'bg-orange-600/20',
       text: 'text-orange-700 dark:text-orange-300',
       border: 'border-orange-600/40',
       glow: 'from-orange-600/30 to-orange-400/10',
+      edgeBorder: 'border-transparent',
+      edgeGradient: 'to-orange-600/60 from-orange-600/20',
       hex: '#EA580C',
-      clinical: 'High Priority / Warning',
     },
-    solar: {
+    caution: {
       bg: 'bg-yellow-500/20',
       text: 'text-yellow-700 dark:text-yellow-300',
       border: 'border-yellow-600/40',
       glow: 'from-yellow-600/30 to-yellow-400/10',
+      edgeBorder: 'border-transparent',
+      edgeGradient: 'to-yellow-600/60 from-yellow-600/20',
       hex: '#FACC15',
-      clinical: 'Caution / Moderate Alert',
     },
-    heart: {
+    normal: {
       bg: 'bg-emerald-600/20',
       text: 'text-emerald-700 dark:text-emerald-300',
       border: 'border-emerald-600/40',
       glow: 'from-emerald-600/30 to-emerald-400/10',
+      edgeBorder: 'border-transparent',
+      edgeGradient: 'to-emerald-600/60 from-emerald-600/20',
       hex: '#10B981',
-      clinical: 'Healthy / Normal Status',
     },
-    throat: {
+    info: {
       bg: 'bg-sky-600/20',
       text: 'text-sky-700 dark:text-sky-300',
       border: 'border-sky-600/40',
       glow: 'from-sky-600/30 to-sky-400/10',
+      edgeBorder: 'border-transparent',
+      edgeGradient: 'to-sky-600/60 from-sky-600/20',
       hex: '#0EA5E9',
-      clinical: 'Information / Communication',
     },
-    third_eye: {
+    insight: {
       bg: 'bg-purple-600/20',
       text: 'text-purple-700 dark:text-purple-300',
       border: 'border-purple-600/40',
       glow: 'from-purple-600/30 to-purple-400/10',
+      edgeBorder: 'border-transparent',
+      edgeGradient: 'to-purple-600/60 from-purple-600/20',
       hex: '#8B5CF6',
-      clinical: 'Insight / Analytics / Diagnosis',
     },
-    crown: {
+    care: {
       bg: 'bg-pink-600/20',
       text: 'text-pink-700 dark:text-pink-300',
       border: 'border-pink-600/40',
       glow: 'from-pink-600/30 to-pink-400/10',
+      edgeBorder: 'border-transparent',
+      edgeGradient: 'to-pink-600/60 from-pink-600/20',
       hex: '#EC4899',
-      clinical: 'Compassion / Care / Wellness',
     },
   },
 
@@ -137,27 +157,29 @@ export const QuantumParams = {
 };
 
 // ============================================================================
-// QUANTUM CARD - Deep Transparency with Chakra Alignment
+// QUANTUM CARD - Ultra-Transparent with Color-Hued Edges
 // ============================================================================
 
 export const QuantumCard = ({
   children,
-  chakra = 'heart',
+  chakra = 'normal',
   blurLevel = 'medium',
-  opacityLevel = 'cloud',
+  opacityLevel = 'ultraClear',
   glow = true,
   interactive = true,
+  edgeGlow = true,
   role = 'article',
   ariaLabel,
   className = '',
   ...props
 }) => {
-  const chakraConfig = QuantumParams.chakra[chakra] || QuantumParams.chakra.heart;
+  const chakraConfig = QuantumParams.chakra[chakra] || QuantumParams.chakra.normal;
   const blurClass = QuantumParams.blur[blurLevel];
   const opacityClass = QuantumParams.opacity[opacityLevel];
   const borderClass = QuantumParams.border[blurLevel === 'quantum' ? 'quantum' : 'mist'];
   const shadowClass = QuantumParams.shadow[blurLevel === 'quantum' ? 'quantum' : 'deep'];
   const transitionClass = QuantumParams.transition.quantum;
+  const edgeHaloClass = QuantumParams.edgeHalo[chakra] || QuantumParams.edgeHalo.normal;
 
   return (
     <div
@@ -173,6 +195,7 @@ export const QuantumCard = ({
         ${chakraConfig.border}
         p-5
         ${shadowClass}
+        ${edgeGlow ? edgeHaloClass : ''}
         ${interactive ? 'cursor-pointer hover:shadow-2xl dark:hover:shadow-2xl/60' : ''}
         ${interactive ? 'hover:' + opacityClass.replace('bg-white/', 'bg-white/') : ''}
         ${transitionClass}
@@ -184,6 +207,25 @@ export const QuantumCard = ({
       aria-label={ariaLabel}
       {...props}
     >
+      {/* Edge Gradient Overlay - Color-hued border effect */}
+      {edgeGlow && (
+        <div className={`
+          absolute
+          inset-0
+          rounded-2xl
+          border
+          border-2
+          ${chakraConfig.edgeBorder}
+          opacity-0
+          group-hover:opacity-100
+          ${transitionClass}
+          pointer-events-none
+          bg-gradient-to-br
+          ${chakraConfig.edgeGradient}
+          -z-10
+        `} />
+      )}
+
       <div className="relative z-10">
         {children}
       </div>
@@ -197,7 +239,7 @@ export const QuantumCard = ({
           bg-gradient-to-br
           ${chakraConfig.glow}
           opacity-0
-          group-hover:opacity-30
+          group-hover:opacity-40
           ${transitionClass}
           pointer-events-none
           -z-10
@@ -208,32 +250,36 @@ export const QuantumCard = ({
 };
 
 // ============================================================================
-// QUANTUM GLASS PANEL - Multi-Layer Quantum Superposition
+// QUANTUM GLASS PANEL - Ultra-Clear with Color-Shifted Edges
 // ============================================================================
 
 export const QuantumGlassPanel = ({
   children,
-  chakra = 'throat',
+  chakra = 'info',
   depth = 'deep',
   className = '',
+  edgeGlow = true,
   ...props
 }) => {
   const chakraConfig = QuantumParams.chakra[chakra];
+  const edgeHaloClass = QuantumParams.edgeHalo[chakra] || QuantumParams.edgeHalo.info;
   const depthConfig = {
-    quantum: { blur: 'quantum', opacity: 'quantum', border: 'quantum' },
-    deep: { blur: 'deep', opacity: 'veil', border: 'ethereal' },
-    medium: { blur: 'medium', opacity: 'mist', border: 'veil' },
-    light: { blur: 'light', opacity: 'fog', border: 'mist' },
+    quantum: { blur: 'quantum', opacity: 'ultraClear', border: 'quantum' },
+    deep: { blur: 'deep', opacity: 'crystal', border: 'ethereal' },
+    medium: { blur: 'medium', opacity: 'ultraClear', border: 'veil' },
+    light: { blur: 'light', opacity: 'quantum', border: 'mist' },
   }[depth];
 
   return (
     <div className={`
       relative
+      group
       overflow-hidden
       rounded-3xl
+      ${edgeGlow ? edgeHaloClass : ''}
       ${className}
     `}>
-      {/* Layer 1: Quantum Base */}
+      {/* Layer 1: Quantum Base - Ultra-transparent */}
       <div className={`
         absolute
         inset-0
@@ -242,17 +288,33 @@ export const QuantumGlassPanel = ({
         ${chakraConfig.bg}
       `} />
 
-      {/* Layer 2: Quantum Entanglement */}
+      {/* Layer 2: Quantum Entanglement - Enhanced depth */}
       <div className={`
         absolute
         inset-0
-        backdrop-blur-xl
-        ${QuantumParams.opacity.ethereal}
+        backdrop-blur-3xl
+        ${QuantumParams.opacity.quantum}
         from-transparent to-white/5 dark:to-black/5
         bg-gradient-to-br
       `} />
 
-      {/* Layer 3: Border Quantum State */}
+      {/* Layer 3: Border Quantum State with Color Hue */}
+      <div className={`
+        absolute
+        inset-0
+        rounded-3xl
+        border-2
+        ${QuantumParams.border[depthConfig.border]}
+        ${chakraConfig.border}
+        pointer-events-none
+        opacity-0
+        group-hover:opacity-100
+        ${QuantumParams.transition.quantum}
+        bg-gradient-to-br
+        ${chakraConfig.edgeGradient}
+      `} />
+
+      {/* Standard Border */}
       <div className={`
         absolute
         inset-0
@@ -268,7 +330,7 @@ export const QuantumGlassPanel = ({
         {children}
       </div>
 
-      {/* Glow Effect Layer */}
+      {/* Enhanced Glow Effect Layer */}
       <div className={`
         absolute
         -inset-1
@@ -276,11 +338,10 @@ export const QuantumGlassPanel = ({
         bg-gradient-to-br
         ${chakraConfig.glow}
         opacity-10
-        group-hover:opacity-20
-        blur-xl
+        group-hover:opacity-30
+        blur-2xl
         -z-10
-        transition-opacity
-        duration-500
+        ${QuantumParams.transition.quantum}
       `} />
     </div>
   );
