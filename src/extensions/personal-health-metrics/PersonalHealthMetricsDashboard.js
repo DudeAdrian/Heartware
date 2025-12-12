@@ -3,10 +3,27 @@ import { GlassCard, GlassGrid } from '../../theme/GlassmorphismTheme';
 import Integrations from './Integrations';
 
 const metrics = [
+  // Western Vitals
   { label: 'Heart Rate', value: '72 bpm', icon: '❤️' },
+  { label: 'Blood Pressure', value: '120/80 mmHg', icon: '🩺' },
   { label: 'Sleep', value: '7.5 hrs', icon: '🛌' },
-  { label: 'Mood', value: '😊', icon: '🙂' },
   { label: 'Steps', value: '8,200', icon: '👟' },
+  { label: 'Mood', value: '😊', icon: '🙂' },
+  { label: 'Energy', value: 'High', icon: '⚡' },
+
+  // Ayurveda
+  { label: 'Dosha Balance', value: 'Vata-Pitta', icon: '🌿' },
+  { label: 'Agni (Digestive Fire)', value: 'Strong', icon: '🔥' },
+
+  // TCM (Traditional Chinese Medicine)
+  { label: 'Pulse Quality', value: 'Smooth', icon: '🫀' },
+  { label: 'Tongue Color', value: 'Pink', icon: '👅' },
+
+  // Self-Assessment
+  { label: 'Stress Level', value: 'Low', icon: '🧘' },
+  { label: 'Mindfulness Check', value: 'Present', icon: '🧠' },
+  { label: 'Hydration', value: 'Optimal', icon: '💧' },
+  { label: 'Pain/Discomfort', value: 'None', icon: '🩹' },
 ];
 
 const PersonalHealthMetricsDashboard = () => (

@@ -3,9 +3,31 @@ import { GlassCard, GlassGrid } from '../../theme/GlassmorphismTheme';
 import Integrations from './Integrations';
 
 const nutrition = [
+  // Modern & Mediterranean
   { name: 'Breakfast', details: 'Oatmeal, berries, green tea', icon: '🥣' },
-  { name: 'Lunch', details: 'Quinoa salad, avocado, lemon water', icon: '🥗' },
+  { name: 'Lunch', details: 'Quinoa salad, avocado, lemon water', icon: '🥑' },
+  { name: 'Dinner', details: 'Grilled fish, olive oil, greens', icon: '🐟' },
+  { name: 'Snacks', details: 'Nuts, seeds, fruit', icon: '🥜' },
+
+  // Hydration & Rituals
   { name: 'Hydration', details: '5/8 cups today', icon: '💧' },
+  { name: 'Morning Lemon Water', details: 'Alkalizing daily ritual', icon: '🍋' },
+
+  // Ayurveda
+  { name: 'Ayurvedic Meal', details: 'Kitchari, ghee, cumin tea', icon: '🌾' },
+  { name: 'Seasonal Eating', details: 'Root veggies in winter, greens in spring', icon: '🥕' },
+
+  // TCM
+  { name: 'TCM Soup', details: 'Bone broth, goji berries, ginger', icon: '🍲' },
+  { name: 'Yin/Yang Balance', details: 'Warming/cooling foods for harmony', icon: '☯️' },
+
+  // Blue Zones & Indigenous
+  { name: 'Blue Zones Meal', details: 'Beans, whole grains, local veggies', icon: '🫘' },
+  { name: 'Indigenous Wisdom', details: 'Foraged foods, gratitude ritual', icon: '🌽' },
+
+  // Mindful Eating
+  { name: 'Mindful Meal', details: 'Eat slowly, savor, gratitude', icon: '🧘‍♀️' },
+];
 ];
 
 const NutritionDashboard = () => (

@@ -1,12 +1,8 @@
-import Profile from "./pages/Profile";
-              <Route path="/profile" element={<Profile />} />
+
 import RegionProvider from "./context/RegionContext";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { SofieProvider } from "./context/SofieContext";
-
-// Core Pages
-
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Settings from "./pages/Settings";
@@ -20,8 +16,26 @@ import SelfCare from "./pages/SelfCare";
 import Biofeedback from "./pages/Biofeedback";
 import HealthRecords from "./pages/HealthRecords";
 import Emergency from "./pages/Emergency";
+import Profile from "./pages/Profile";
 import SystemShell from "./components/SystemShellTouchOS";
 
+// The following imports are commented out because the files are not present or not implemented yet.
+// import HealthcareOperations from "./pages/HealthcareOperations";
+// import PatientWellbeing from "./pages/PatientWellbeing";
+// import MedicationInventory from "./pages/MedicationInventory";
+// import PatientOutcomes from "./pages/PatientOutcomes";
+// import MedicalDevices from "./pages/MedicalDevices";
+// import HealthOutcomeTracking from "./pages/HealthOutcomeTracking";
+// import ClinicalPredictions from "./pages/ClinicalPredictions";
+// import Wellness from "./pages/Wellness";
+// import PersonalHerbalJournal from "./pages/PersonalHerbalJournal";
+// import AlertCenter from "./pages/AlertCenter";
+// import KnowledgeBase from "./pages/KnowledgeBase";
+// import Services from "./pages/Services";
+// import Map from "./pages/Map";
+// import HealthSystemAdmin from "./pages/HealthSystemAdmin";
+// import Governance from "./pages/Governance";
+// import Resilience from "./pages/Resilience";
 
 // Block extensions trying to redefine ethereum
 if (window.ethereum && Object.getOwnPropertyDescriptor(window, 'ethereum')?.configurable === false) {
@@ -40,30 +54,23 @@ const App = () => {
               <Route path="/" element={<Home />} />
               <Route path="/setup" element={<SetupWizard />} />
               
-              {/* Personal Health Dashboard */}
-              <Route path="/dashboard" element={<HealthcareOperations />} />
-              
-              {/* Health Management */}
-              <Route path="/wellbeing" element={<PatientWellbeing />} />
-              <Route path="/medications" element={<MedicationInventory />} />
-              <Route path="/outcomes" element={<PatientOutcomes />} />
-              <Route path="/devices" element={<MedicalDevices />} />
-              <Route path="/tracking" element={<HealthOutcomeTracking />} />
-              <Route path="/predictions" element={<ClinicalPredictions />} />
-              <Route path="/wellness" element={<Wellness />} />
-              <Route path="/herbal-journal" element={<PersonalHerbalJournal />} />
-              
-              {/* System */}
-              <Route path="/alerts" element={<AlertCenter />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="/knowledge" element={<KnowledgeBase />} />
-              <Route path="/services" element={<Services />} />
-              <Route path="/map" element={<Map />} />
-              
-              {/* Admin (optional) */}
-              <Route path="/admin" element={<HealthSystemAdmin />} />
-              <Route path="/governance" element={<Governance />} />
-              <Route path="/resilience" element={<Resilience />} />
+
+              {/* Extensions and Core Pages */}
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/setup" element={<SetupWizard />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/holistic" element={<Home />} /> {/* Optionally replace with HolisticWellnessDashboard if direct */}
+              <Route path="/metrics" element={<PersonalHealthMetrics />} />
+              <Route path="/mindfulness" element={<Mindfulness />} />
+              <Route path="/nutrition" element={<Nutrition />} />
+              <Route path="/movement" element={<Movement />} />
+              <Route path="/medications" element={<Home />} /> {/* Optionally replace with MedicationDashboard if direct */}
+              <Route path="/care-team" element={<CareTeam />} />
+              <Route path="/self-care" element={<SelfCare />} />
+              <Route path="/biofeedback" element={<Biofeedback />} />
+              <Route path="/records" element={<HealthRecords />} />
+              <Route path="/emergency" element={<Emergency />} />
 
               {/* Extension Dashboards */}
               <Route path="/holistic" element={<Home />} /> {/* Optionally replace with HolisticWellnessDashboard if direct */}

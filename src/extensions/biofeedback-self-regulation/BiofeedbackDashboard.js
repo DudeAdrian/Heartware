@@ -2,10 +2,23 @@ import React from 'react';
 import { GlassCard, GlassGrid } from '../../theme/GlassmorphismTheme';
 import Integrations from './Integrations';
 
+
 const feedback = [
+  // Biofeedback & HRV
   { name: 'HRV Training', details: 'Heart rate variability session', icon: '💓' },
   { name: 'Breath Pacer', details: 'Guided breathing exercise', icon: '🌬️' },
+  { name: 'Neurofeedback', details: 'Brainwave training (alpha/theta)', icon: '🧠' },
+  { name: 'GSR Monitor', details: 'Skin conductance for stress', icon: '🖐️' },
+
+  // Somatic & Trauma Healing
   { name: 'Relaxation', details: 'Progressive muscle relaxation', icon: '🧘‍♂️' },
+  { name: 'Tapping (EFT)', details: 'Emotional Freedom Technique', icon: '🤲' },
+  { name: 'TRE (Tension Release)', details: 'Somatic shaking for trauma release', icon: '🦵' },
+
+  // Resilience & Regulation
+  { name: 'Resilience Builder', details: 'Track stress and recovery', icon: '🛡️' },
+  { name: 'Coherence Breathing', details: 'Synchronize heart and mind', icon: '🔄' },
+  { name: 'Cold Exposure', details: 'Wim Hof or cold shower', icon: '❄️' },
 ];
 
 const BiofeedbackDashboard = () => (

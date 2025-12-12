@@ -2,12 +2,42 @@ import React from 'react';
 import { GlassCard, GlassGrid } from '../../theme/GlassmorphismTheme';
 import Integrations from './Integrations';
 
-const protocols = [
   { name: 'Solfeggio 528Hz', type: 'Frequency', description: 'DNA repair, transformation, miracles.' },
   { name: 'Theta Binaural', type: 'Vibration', description: 'Deep relaxation, meditation, healing.' },
   { name: 'Chakra Balancing', type: 'Energy', description: 'Align and balance energy centers.' },
 ];
 
+const protocols = [
+  // Sound & Frequency Healing
+  { name: 'Solfeggio 528Hz', type: 'Frequency', description: 'DNA repair, transformation, miracles.' },
+  { name: 'Theta Binaural', type: 'Vibration', description: 'Deep relaxation, meditation, healing.' },
+  { name: 'Tibetan Singing Bowls', type: 'Sound', description: 'Harmonize body and mind with ancient Himalayan sound therapy.' },
+  { name: 'Gong Bath', type: 'Sound', description: 'Immersive sound healing for deep relaxation and energetic clearing.' },
+
+  // Energy & Subtle Body Practices
+  { name: 'Chakra Balancing', type: 'Energy', description: 'Align and balance energy centers (yogic/ayurvedic).' },
+  { name: 'Reiki', type: 'Energy', description: 'Japanese hands-on healing for stress reduction and energy flow.' },
+  { name: 'Qi Gong', type: 'Energy', description: 'Chinese practice for cultivating and balancing life force (Qi).' },
+  { name: 'Pranic Healing', type: 'Energy', description: 'No-touch energy healing using prana (life energy).' },
+
+  // Traditional Medicine & Ritual
+  { name: 'Ayurveda Dinacharya', type: 'Daily Ritual', description: 'Daily self-care routines for balance (oil pulling, abhyanga, tongue scraping).' },
+  { name: 'TCM Meridian Tapping', type: 'Acupressure', description: 'Stimulate meridian points for emotional and physical health.' },
+  { name: 'Amazonian Plant Dieta', type: 'Shamanic', description: 'Plant-based healing and vision questing (with guidance).'},
+  { name: 'Sweat Lodge Ceremony', type: 'Indigenous', description: 'Purification and renewal through heat and prayer.' },
+
+  // Modern Integrative & Mind-Body
+  { name: 'Heart Coherence Breathing', type: 'Breathwork', description: 'Synchronize heart and mind for emotional balance.' },
+  { name: 'Guided Visualization', type: 'Mind-Body', description: 'Imagery for healing, goal setting, and stress relief.' },
+  { name: 'Forest Bathing (Shinrin-yoku)', type: 'Nature Therapy', description: 'Japanese practice of mindful immersion in nature.' },
+  { name: 'Aromatherapy', type: 'Scent', description: 'Essential oils for mood, relaxation, and healing.' },
+
+  // Spiritual & Wisdom Traditions
+  { name: 'Mantra Meditation', type: 'Spiritual', description: 'Chanting sacred sounds for focus and spiritual growth.' },
+  { name: 'Ho’oponopono', type: 'Hawaiian', description: 'Forgiveness and reconciliation practice for inner peace.' },
+  { name: 'Dreamwork', type: 'Shamanic/Modern', description: 'Exploring dreams for insight, healing, and guidance.' },
+  { name: 'Moon Rituals', type: 'Lunar', description: 'Setting intentions and releasing with lunar cycles.' },
+];
 const HolisticWellnessDashboard = () => (
   <div className="max-w-3xl mx-auto p-6">
     <h2 className="text-3xl font-bold mb-6 text-heart-600 dark:text-heart-300">Holistic Wellness Protocols</h2>

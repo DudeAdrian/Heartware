@@ -2,10 +2,23 @@ import React from 'react';
 import { GlassCard, GlassGrid } from '../../theme/GlassmorphismTheme';
 import Integrations from './Integrations';
 
+
 const team = [
+  // Professional & Clinical
   { name: 'Dr. Smith', role: 'Primary Care', icon: '👩‍⚕️' },
   { name: 'Coach Lee', role: 'Wellness Coach', icon: '🧑‍🏫' },
+  { name: 'Therapist Kim', role: 'Mental Health', icon: '🧑‍⚕️' },
+
+  // Family & Community
+  { name: 'Family Circle', role: 'Loved Ones', icon: '👨‍👩‍👧‍👦' },
+  { name: 'Elder Wisdom', role: 'Elders/Ancestors', icon: '🧓' },
+  { name: 'Healing Circle', role: 'Group Support', icon: '🪶' },
   { name: 'Support Group', role: 'Peers', icon: '🤝' },
+
+  // Digital & Peer
+  { name: 'Online Community', role: 'Digital Support', icon: '🌐' },
+  { name: 'Peer Mentor', role: 'Lived Experience', icon: '🧑‍🤝‍🧑' },
+  { name: 'Spiritual Guide', role: 'Faith/Tradition', icon: '🕊️' },
 ];
 
 const CareTeamDashboard = () => (
