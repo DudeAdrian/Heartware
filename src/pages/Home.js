@@ -7,32 +7,81 @@ import { GlassSection, GlassCard, GlassGrid } from "../theme/GlassmorphismTheme"
 const Home = () => {
   const features = [
     {
-      icon: "⚡",
-      title: "Energy Systems",
-      description: "Monitor solar production, battery levels, and grid balance in real-time.",
-      link: "/services/energy",
-      color: "amber",
+      icon: "❤️",
+      title: "Holistic Wellness",
+      description: "Access frequency, vibration, and holistic healing tools for mind, body, and spirit.",
+      link: "/holistic",
+      color: "heart",
     },
     {
-      icon: "👥",
-      title: "Community",
-      description: "Connect, collaborate, and empower your local community.",
-      link: "/services/community",
+      icon: "📊",
+      title: "Personal Health Metrics",
+      description: "Track vitals, mood, sleep, activity, and self-reported symptoms.",
+      link: "/metrics",
+      color: "emerald",
+    },
+    {
+      icon: "🧘‍♂️",
+      title: "Mindfulness & Mental Health",
+      description: "Guided meditations, breathwork, and mood tracking.",
+      link: "/mindfulness",
+      color: "sky",
+    },
+    {
+      icon: "🥗",
+      title: "Nutrition & Hydration",
+      description: "Personalized meal plans, hydration reminders, and food logging.",
+      link: "/nutrition",
+      color: "lime",
+    },
+    {
+      icon: "🏃‍♀️",
+      title: "Movement & Physical Activity",
+      description: "Exercise routines, yoga, and movement reminders.",
+      link: "/movement",
+      color: "orange",
+    },
+    {
+      icon: "💊",
+      title: "Medication & Supplement Management",
+      description: "Reminders, tracking, and education for medications and supplements.",
+      link: "/medications",
+      color: "violet",
+    },
+    {
+      icon: "🤝",
+      title: "Care Team & Support Network",
+      description: "Connect with care providers, family, and support groups.",
+      link: "/care-team",
       color: "teal",
     },
     {
-      icon: "🌍",
-      title: "Sustainability",
-      description: "Track food, water, housing, and environmental metrics.",
-      link: "/sustainability",
+      icon: "🌿",
+      title: "Self-Care & Lifestyle Pathways",
+      description: "Customizable self-care routines and habit tracking.",
+      link: "/self-care",
       color: "green",
     },
     {
-      icon: "⚙️",
-      title: "Admin",
-      description: "Manage users, settings, and system configuration.",
-      link: "/admin",
+      icon: "🔬",
+      title: "Biofeedback & Self-Regulation",
+      description: "Tools for HRV, breath, and other biofeedback modalities.",
+      link: "/biofeedback",
+      color: "cyan",
+    },
+    {
+      icon: "📁",
+      title: "Personal Health Records",
+      description: "Secure, user-controlled access to health data and documents.",
+      link: "/records",
       color: "slate",
+    },
+    {
+      icon: "🚨",
+      title: "Emergency & Safety",
+      description: "Quick access to emergency contacts and crisis resources.",
+      link: "/emergency",
+      color: "rose",
     },
   ];
 
@@ -61,19 +110,29 @@ const Home = () => {
         {/* Feature Cards */}
         <div className="space-y-2">
           <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">Featured Services</h2>
-          <GlassGrid cols={1} colsMd={2} gap={6}>
+          <GlassGrid columns={2} gap={6}>
             {features.map((feature) => (
               <Link key={feature.link} to={feature.link}>
-                <GlassCard colors={{ primary: feature.color, secondary: feature.color }}>
+                <GlassCard
+                  blurAmount="md"
+                  className="h-full flex flex-col justify-between"
+                  // Use heart palette for the holistic card, otherwise use feature color
+                  {...(feature.color === "heart"
+                    ? { style: { borderLeft: '6px solid #e11d48' } } // heart-600
+                    : { style: { borderLeft: undefined } })}
+                >
                   <div className="flex items-start justify-between mb-4">
-                    <span className="text-4xl">{feature.icon}</span>
-                    <span className="text-xs font-bold px-3 py-1 rounded-full bg-white/30 dark:bg-slate-800/30 text-slate-700 dark:text-slate-300">
+                    <span className={feature.color === "heart" ? "text-4xl text-heart-500" : "text-4xl"}>{feature.icon}</span>
+                    <span className={feature.color === "heart"
+                      ? "text-xs font-bold px-3 py-1 rounded-full bg-heart-100/60 text-heart-700 border border-heart-200"
+                      : "text-xs font-bold px-3 py-1 rounded-full bg-white/30 dark:bg-slate-800/30 text-slate-700 dark:text-slate-300 border border-white/20 dark:border-slate-700/50"}
+                    >
                       Active
                     </span>
                   </div>
-                  <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{feature.title}</h3>
-                  <p className="text-slate-600 dark:text-slate-400 mb-4">{feature.description}</p>
-                  <div className="text-sm font-semibold text-green-600 dark:text-green-400">Explore →</div>
+                  <h3 className={feature.color === "heart" ? "text-2xl font-bold text-heart-700 dark:text-heart-200 mb-2" : "text-2xl font-bold text-slate-900 dark:text-white mb-2"}>{feature.title}</h3>
+                  <p className={feature.color === "heart" ? "text-heart-600 dark:text-heart-300 mb-4" : "text-slate-600 dark:text-slate-400 mb-4"}>{feature.description}</p>
+                  <div className={feature.color === "heart" ? "text-sm font-semibold text-heart-500 dark:text-heart-200" : "text-sm font-semibold text-green-600 dark:text-green-400"}>Explore →</div>
                 </GlassCard>
               </Link>
             ))}

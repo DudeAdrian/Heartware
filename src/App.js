@@ -1,38 +1,27 @@
+import Profile from "./pages/Profile";
+              <Route path="/profile" element={<Profile />} />
 import RegionProvider from "./context/RegionContext";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { SofieProvider } from "./context/SofieContext";
 
 // Core Pages
+
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Settings from "./pages/Settings";
 import SetupWizard from "./pages/SetupWizard";
-
-// Personal Health Pages
-import HealthcareOperations from "./pages/HealthcareOperations"; // Personal Dashboard
-import PatientWellbeing from "./pages/PatientWellbeing"; // Self-sufficiency metrics
-import MedicationInventory from "./pages/MedicationInventory"; // Medication tracking
-import PatientOutcomes from "./pages/PatientOutcomes"; // Health outcomes
-import MedicalDevices from "./pages/MedicalDevices"; // IoT health devices
-import HealthOutcomeTracking from "./pages/HealthOutcomeTracking"; // Impact tracking
-import ClinicalPredictions from "./pages/ClinicalPredictions"; // Health predictions
-import Wellness from "./pages/Wellness"; // Holistic wellness
-import HerbalLibrary from "./pages/HerbalLibrary"; // Herb reference
-import PersonalHerbalJournal from "./pages/PersonalHerbalJournal"; // Herbal journal
-import AlertCenter from "./pages/AlertCenter";
-import KnowledgeBase from "./pages/KnowledgeBase";
-
-// Admin/Management (optional - can be removed if purely personal)
-import HealthSystemAdmin from "./pages/HealthSystemAdmin";
-import Governance from "./pages/Governance";
-import Resilience from "./pages/Resilience";
-
-// Services (simplified)
-import Services from "./pages/Services";
-
+import PersonalHealthMetrics from "./pages/PersonalHealthMetrics";
+import Mindfulness from "./pages/Mindfulness";
+import Nutrition from "./pages/Nutrition";
+import Movement from "./pages/Movement";
+import CareTeam from "./pages/CareTeam";
+import SelfCare from "./pages/SelfCare";
+import Biofeedback from "./pages/Biofeedback";
+import HealthRecords from "./pages/HealthRecords";
+import Emergency from "./pages/Emergency";
 import SystemShell from "./components/SystemShellTouchOS";
-import Map from "./pages/Map";
+
 
 // Block extensions trying to redefine ethereum
 if (window.ethereum && Object.getOwnPropertyDescriptor(window, 'ethereum')?.configurable === false) {
@@ -75,6 +64,19 @@ const App = () => {
               <Route path="/admin" element={<HealthSystemAdmin />} />
               <Route path="/governance" element={<Governance />} />
               <Route path="/resilience" element={<Resilience />} />
+
+              {/* Extension Dashboards */}
+              <Route path="/holistic" element={<Home />} /> {/* Optionally replace with HolisticWellnessDashboard if direct */}
+              <Route path="/metrics" element={<PersonalHealthMetrics />} />
+              <Route path="/mindfulness" element={<Mindfulness />} />
+              <Route path="/nutrition" element={<Nutrition />} />
+              <Route path="/movement" element={<Movement />} />
+              <Route path="/medications" element={<Home />} /> {/* Optionally replace with MedicationDashboard if direct */}
+              <Route path="/care-team" element={<CareTeam />} />
+              <Route path="/self-care" element={<SelfCare />} />
+              <Route path="/biofeedback" element={<Biofeedback />} />
+              <Route path="/records" element={<HealthRecords />} />
+              <Route path="/emergency" element={<Emergency />} />
             </Routes>
           </SystemShell>
         </Router>
