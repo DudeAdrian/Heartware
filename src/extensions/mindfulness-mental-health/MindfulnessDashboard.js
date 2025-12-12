@@ -23,8 +23,7 @@ const practices = [
 
   // Indigenous & Group Practices
   { name: 'Talking Circle', description: 'Share and listen in a safe group.', icon: '🪶' },
-  { name: 'Nature Mindfulness', description: 'Practice presence outdoors.', icon: '🌳' },
-];
+  { name: 'Nature Mindfulness', description: 'Practice presence outdoors.', icon: '🌳' }
 ];
 
 const MindfulnessDashboard = () => (

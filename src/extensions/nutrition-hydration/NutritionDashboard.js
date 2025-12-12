@@ -26,8 +26,7 @@ const nutrition = [
   { name: 'Indigenous Wisdom', details: 'Foraged foods, gratitude ritual', icon: '🌽' },
 
   // Mindful Eating
-  { name: 'Mindful Meal', details: 'Eat slowly, savor, gratitude', icon: '🧘‍♀️' },
-];
+  { name: 'Mindful Meal', details: 'Eat slowly, savor, gratitude', icon: '🧘‍♀️' }
 ];
 
 const NutritionDashboard = () => (
