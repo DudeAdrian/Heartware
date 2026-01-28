@@ -1,11 +1,10 @@
-import React from 'react';
+
+import React, { useState } from 'react';
 import { GlassCard, GlassGrid } from '../../theme/GlassmorphismTheme';
 import Integrations from './Integrations';
+import BridgedSubTab from '../../components/BridgedSubTab';
 
-  { name: 'Solfeggio 528Hz', type: 'Frequency', description: 'DNA repair, transformation, miracles.' },
-  { name: 'Theta Binaural', type: 'Vibration', description: 'Deep relaxation, meditation, healing.' },
-  { name: 'Chakra Balancing', type: 'Energy', description: 'Align and balance energy centers.' },
-];
+
 
 const protocols = [
   // Sound & Frequency Healing
@@ -38,20 +37,37 @@ const protocols = [
   { name: 'Dreamwork', type: 'Shamanic/Modern', description: 'Exploring dreams for insight, healing, and guidance.' },
   { name: 'Moon Rituals', type: 'Lunar', description: 'Setting intentions and releasing with lunar cycles.' },
 ];
-const HolisticWellnessDashboard = () => (
-  <div className="max-w-3xl mx-auto p-6">
-    <h2 className="text-3xl font-bold mb-6 text-heart-600 dark:text-heart-300">Holistic Wellness Protocols</h2>
-    <Integrations />
-    <GlassGrid columns={1} gap={6}>
-      {protocols.map((p, i) => (
-        <GlassCard key={i} className="flex flex-col gap-2 border-l-4 border-heart-400">
-          <div className="text-xl font-semibold text-heart-500">{p.name}</div>
-          <div className="text-sm text-gray-500">{p.type}</div>
-          <div className="text-base text-slate-700 dark:text-slate-200">{p.description}</div>
-        </GlassCard>
-      ))}
-    </GlassGrid>
-  </div>
-);
+
+const HolisticWellnessDashboard = () => {
+  const [selectedProtocol, setSelectedProtocol] = useState(null);
+
+  return (
+    <div className="max-w-3xl mx-auto p-6">
+      <div style={{color: '#0af', fontWeight: 'bold', marginBottom: 8}}>HolisticWellnessDashboard.js is rendering (debug)</div>
+      <h2 className="text-3xl font-bold mb-6 text-heart-600 dark:text-heart-300">Holistic Wellness Protocols</h2>
+      <Integrations />
+      <GlassGrid columns={1} gap={6}>
+        {protocols.map((p, i) => (
+          <GlassCard key={i} className="flex flex-col gap-2 border-l-4 border-heart-400 cursor-pointer" onClick={() => setSelectedProtocol(p.name)}>
+            <div className="text-xl font-semibold text-heart-500">{p.name}</div>
+            <div className="text-sm text-gray-500">{p.type}</div>
+            <div className="text-base text-slate-700 dark:text-slate-200">{p.description}</div>
+            <button className="mt-2 px-3 py-1 rounded bg-heart-200 dark:bg-heart-700 text-heart-900 dark:text-heart-100 w-max self-end" onClick={e => { e.stopPropagation(); setSelectedProtocol(p.name); }}>
+              View Actions
+            </button>
+          </GlassCard>
+        ))}
+      </GlassGrid>
+      {selectedProtocol && (
+        <div className="mt-8">
+          <BridgedSubTab subTabKey={selectedProtocol} />
+          <button className="mt-4 px-4 py-2 rounded bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-slate-100" onClick={() => setSelectedProtocol(null)}>
+            Close
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default HolisticWellnessDashboard;

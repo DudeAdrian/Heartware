@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { sendSofiePrompt } from '../services/SofieLlamaService';
 import { GlassCard } from '../theme/GlassmorphismTheme';
+import { sofieLibraries } from '../services/SofieLibraryList';
 
 const defaultProfile = {
   name: 'Jane Doe',
@@ -23,6 +25,11 @@ const defaultProfile = {
 
 const Profile = () => {
   const [profile, setProfile] = useState(defaultProfile);
+  const [sofieInput, setSofieInput] = useState('');
+  const [sofieResponse, setSofieResponse] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [selectedLibrary, setSelectedLibrary] = useState(sofieLibraries[0]?.key || 'frequencies');
 
   const handleChange = (e) => {
     setProfile({ ...profile, [e.target.name]: e.target.value });
@@ -33,6 +40,26 @@ const Profile = () => {
       ...profile,
       extensions: { ...profile.extensions, [ext]: !profile.extensions[ext] },
     });
+  };
+
+  const handleSofieSend = async () => {
+    setLoading(true);
+    setError('');
+    setSofieResponse('');
+    try {
+      const result = await sendSofiePrompt(sofieInput, {
+        user: profile,
+        library: selectedLibrary,
+      });
+      if (result.error) {
+        setError(result.error);
+      } else {
+        setSofieResponse(result.choices ? result.choices[0]?.message?.content : JSON.stringify(result));
+      }
+    } catch (err) {
+      setError('Failed to connect to SOFIE.');
+    }
+    setLoading(false);
   };
 
   return (
@@ -69,6 +96,49 @@ const Profile = () => {
             <option value="light">Light</option>
             <option value="dark">Dark</option>
           </select>
+        </div>
+      </GlassCard>
+      {/* SOFIE LLaMA Chat UI */}
+      <GlassCard className="mb-6">
+        <h2 className="text-lg font-semibold mb-2">SOFIE AI Companion</h2>
+        <div className="mb-2">
+          <textarea
+            className="w-full p-2 border rounded"
+            rows={3}
+            value={sofieInput}
+            onChange={e => setSofieInput(e.target.value)}
+            placeholder="Ask SOFIE anything..."
+          />
+        </div>
+        <button
+          className="px-4 py-2 bg-blue-600 text-white rounded"
+          onClick={handleSofieSend}
+          disabled={loading || !sofieInput.trim()}
+        >
+          {loading ? 'Sending...' : 'Send'}
+        </button>
+        {sofieResponse && (
+          <div className="mt-4 p-2 bg-gray-100 rounded">
+            <strong>SOFIE:</strong> {sofieResponse}
+          </div>
+        )}
+        {error && (
+          <div className="mt-2 text-red-600">{error}</div>
+        )}
+        <div className="mt-4">
+          <label className="block text-sm font-medium mb-1">Select Knowledge Library</label>
+          <select
+            className="w-full p-2 border rounded mb-2"
+            value={selectedLibrary}
+            onChange={e => setSelectedLibrary(e.target.value)}
+          >
+            {sofieLibraries.map(lib => (
+              <option key={lib.key} value={lib.key}>{lib.label}</option>
+            ))}
+          </select>
+          <small className="text-xs text-gray-500">
+            {sofieLibraries.find(lib => lib.key === selectedLibrary)?.description}
+          </small>
         </div>
       </GlassCard>
       <GlassCard>

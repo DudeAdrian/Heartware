@@ -17,6 +17,17 @@ const KnowledgeBase = () => {
       setArticles(kbService.getArticles());
       setBestPractices(kbService.getBestPractices());
       setStats(kbService.getStats());
+    } else {
+      // Demo fallback data
+      setArticles([
+        { id: 1, title: "How to Start Meditation", category: "Mindfulness", content: "Begin with 5 minutes daily..." },
+        { id: 2, title: "Healthy Eating Basics", category: "Nutrition", content: "Focus on whole foods..." },
+      ]);
+      setBestPractices([
+        { id: 1, title: "Daily Movement", description: "Move your body every day for at least 20 minutes." },
+        { id: 2, title: "Hydration", description: "Drink at least 8 cups of water daily." },
+      ]);
+      setStats({ totalArticles: 2, totalBestPractices: 2, categories: ["Mindfulness", "Nutrition"], totalViews: 42 });
     }
   }, []);
 

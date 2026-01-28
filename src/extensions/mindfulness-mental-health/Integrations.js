@@ -1,3 +1,4 @@
+import { GlassCard } from '../../theme/GlassmorphismTheme';
 
 
 const Integrations = () => (

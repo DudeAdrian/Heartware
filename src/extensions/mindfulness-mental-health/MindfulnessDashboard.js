@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { GlassCard, GlassGrid } from '../../theme/GlassmorphismTheme';
 import Integrations from './Integrations';
+import BridgedSubTab from '../../components/BridgedSubTab';
 
 const practices = [
   // Meditation & Mindfulness
@@ -26,22 +27,38 @@ const practices = [
   { name: 'Nature Mindfulness', description: 'Practice presence outdoors.', icon: '🌳' }
 ];
 
-const MindfulnessDashboard = () => (
-  <div className="max-w-3xl mx-auto p-6">
-    <h2 className="text-3xl font-bold mb-6 text-sky-600 dark:text-sky-300">Mindfulness & Mental Health</h2>
-    <Integrations />
-    <GlassGrid columns={1} gap={6}>
-      {practices.map((p, i) => (
-        <GlassCard key={i} className="flex items-center gap-4 border-l-4 border-sky-400">
-          <span className="text-3xl">{p.icon}</span>
-          <div>
-            <div className="text-lg font-semibold">{p.name}</div>
-            <div className="text-base text-slate-700 dark:text-slate-200">{p.description}</div>
-          </div>
-        </GlassCard>
-      ))}
-    </GlassGrid>
-  </div>
-);
+
+const MindfulnessDashboard = () => {
+  const [selectedPractice, setSelectedPractice] = useState(null);
+
+  return (
+    <div className="max-w-3xl mx-auto p-6">
+      <h2 className="text-3xl font-bold mb-6 text-sky-600 dark:text-sky-300">Mindfulness & Mental Health</h2>
+      <Integrations />
+      <GlassGrid columns={1} gap={6}>
+        {practices.map((p, i) => (
+          <GlassCard key={i} className="flex items-center gap-4 border-l-4 border-sky-400 cursor-pointer" onClick={() => setSelectedPractice(p.name)}>
+            <span className="text-3xl">{p.icon}</span>
+            <div>
+              <div className="text-lg font-semibold">{p.name}</div>
+              <div className="text-base text-slate-700 dark:text-slate-200">{p.description}</div>
+            </div>
+            <button className="ml-auto px-3 py-1 rounded bg-sky-200 dark:bg-sky-700 text-sky-900 dark:text-sky-100" onClick={e => { e.stopPropagation(); setSelectedPractice(p.name); }}>
+              View Actions
+            </button>
+          </GlassCard>
+        ))}
+      </GlassGrid>
+      {selectedPractice && (
+        <div className="mt-8">
+          <BridgedSubTab subTabKey={selectedPractice} />
+          <button className="mt-4 px-4 py-2 rounded bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-slate-100" onClick={() => setSelectedPractice(null)}>
+            Close
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default MindfulnessDashboard;

@@ -16,6 +16,21 @@ const Wellness = () => {
       setEvents(wellnessService.getCommunityEvents());
       setResources(wellnessService.getWellnessResources());
       setStats(wellnessService.getWellnessStats());
+    } else {
+      // Demo fallback data
+      setPrograms([
+        { id: 1, name: "Yoga for All", description: "Daily yoga sessions for all levels.", active: true },
+        { id: 2, name: "Mindful Mornings", description: "Guided meditation and breathwork.", active: true },
+      ]);
+      setEvents([
+        { id: 1, name: "Community Walk", date: "2026-02-01", location: "Central Park" },
+        { id: 2, name: "Wellness Fair", date: "2026-02-15", location: "Community Center" },
+      ]);
+      setResources([
+        { id: 1, name: "Healthy Recipes", link: "#" },
+        { id: 2, name: "Stress Management Guide", link: "#" },
+      ]);
+      setStats({ totalPrograms: 2, totalEvents: 2, totalResources: 2 });
     }
   }, []);
 

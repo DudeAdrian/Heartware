@@ -1,4 +1,6 @@
 
+import { GlassCard } from '../../theme/GlassmorphismTheme';
+
 
 const Integrations = () => (
   <GlassCard className="mb-4">
