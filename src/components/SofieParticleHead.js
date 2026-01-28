@@ -112,7 +112,6 @@ export default function SofieParticleHead() {
       targets[i * 3 + 1] = r * Math.cos(phi) + 32;
       targets[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
     }
-    console.log('Particle head targets created.');
 
     geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
 
@@ -168,7 +167,6 @@ export default function SofieParticleHead() {
       particles.rotation.y = Math.sin(time * 0.0002) * 0.15;
       particles.position.y = Math.sin(time * 0.001) * FLOAT_AMPLITUDE + 32;
       renderer.render(scene, camera);
-      if (time % 1000 < 20) console.log('ANIMATION FRAME RUNNING');
     }
     animate();
     setTimeout(() => {

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { SofieContext } from '../context/SofieContext';
 import { sendSofiePrompt } from '../services/SofieLlamaService';
 import { GlassCard } from '../theme/GlassmorphismTheme';
 import { sofieLibraries } from '../services/SofieLibraryList';
@@ -23,13 +24,34 @@ const defaultProfile = {
   },
 };
 
+
 const Profile = () => {
+  const { state } = useContext(SofieContext);
   const [profile, setProfile] = useState(defaultProfile);
   const [sofieInput, setSofieInput] = useState('');
   const [sofieResponse, setSofieResponse] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [selectedLibrary, setSelectedLibrary] = useState(sofieLibraries[0]?.key || 'frequencies');
+
+  // If onboarding userProfile exists, merge it in (one-way, on mount)
+  React.useEffect(() => {
+    if (state.userProfile) {
+      setProfile(prev => ({
+        ...prev,
+        name: state.userProfile.fullName || prev.name,
+        fullName: state.userProfile.fullName,
+        location: state.userProfile.location,
+        age: state.userProfile.age,
+        gender: state.userProfile.gender,
+        height: state.userProfile.height,
+        weight: state.userProfile.weight,
+        career: state.userProfile.career,
+        goal: state.userProfile.goal,
+        focus: state.userProfile.focus,
+      }));
+    }
+  }, [state.userProfile]);
 
   const handleChange = (e) => {
     setProfile({ ...profile, [e.target.name]: e.target.value });
@@ -67,11 +89,83 @@ const Profile = () => {
       <GlassCard className="mb-6">
         <h2 className="text-2xl font-bold mb-4">User Profile</h2>
         <div className="mb-2">
-          <label className="block text-sm font-medium mb-1">Name</label>
+          <label className="block text-sm font-medium mb-1">Full Name</label>
           <input
             className="w-full rounded p-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"
             name="name"
-            value={profile.name}
+            value={profile.fullName || profile.name}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="mb-2">
+          <label className="block text-sm font-medium mb-1">Location</label>
+          <input
+            className="w-full rounded p-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"
+            name="location"
+            value={profile.location || ''}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="mb-2">
+          <label className="block text-sm font-medium mb-1">Age</label>
+          <input
+            className="w-full rounded p-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"
+            name="age"
+            value={profile.age || ''}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="mb-2">
+          <label className="block text-sm font-medium mb-1">Gender</label>
+          <input
+            className="w-full rounded p-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"
+            name="gender"
+            value={profile.gender || ''}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="mb-2">
+          <label className="block text-sm font-medium mb-1">Height</label>
+          <input
+            className="w-full rounded p-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"
+            name="height"
+            value={profile.height || ''}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="mb-2">
+          <label className="block text-sm font-medium mb-1">Weight</label>
+          <input
+            className="w-full rounded p-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"
+            name="weight"
+            value={profile.weight || ''}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="mb-2">
+          <label className="block text-sm font-medium mb-1">Career</label>
+          <input
+            className="w-full rounded p-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"
+            name="career"
+            value={profile.career || ''}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="mb-2">
+          <label className="block text-sm font-medium mb-1">Main Wellness Goal</label>
+          <input
+            className="w-full rounded p-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"
+            name="goal"
+            value={profile.goal || ''}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="mb-2">
+          <label className="block text-sm font-medium mb-1">First Focus Area</label>
+          <input
+            className="w-full rounded p-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"
+            name="focus"
+            value={profile.focus || ''}
             onChange={handleChange}
           />
         </div>

@@ -65,7 +65,7 @@ export default function SofieGuideWidget() {
       try {
         const context = chatHistory.map(m => ({ role: m.sender, content: m.text }));
         const result = await sendSofiePrompt(chatInput, { context });
-        const reply = result.choices ? result.choices[0]?.message?.content : (result.error || "Sofie is unavailable. Please try again later.");
+        const reply = result.response || result.error || "Sofie is unavailable. Please try again later.";
         setChatHistory(prev => [...prev, { sender: "sofie", text: reply }]);
       } catch (err) {
         setError("Sofie is unavailable. Please try again later.");

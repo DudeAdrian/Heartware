@@ -12,6 +12,17 @@ export default function SofieLlamaWelcome() {
   const bannerText = "S.O.F.I.E Systems Heartware — your individual journey into wellness";
   const [displayed, setDisplayed] = React.useState("");
   const [showParticles, setShowParticles] = React.useState(false);
+
+  // Fix: Define all missing state variables
+  const [wakeActive, setWakeActive] = useState(false);
+  const [wakeDetected, setWakeDetected] = useState(false);
+  const [showChat, setShowChat] = useState(true);
+  const [chatHistory, setChatHistory] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [chatInput, setChatInput] = useState("");
+  const [error, setError] = useState("");
+  const [micActive, setMicActive] = useState(false);
+  const [micError, setMicError] = useState("");
   return (
     <div style={{ width: '100vw', height: '100vh', background: 'radial-gradient(ellipse at center, #0a0a23 0%, #1a1a2e 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
       <React.Fragment>

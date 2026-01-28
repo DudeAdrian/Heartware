@@ -149,7 +149,6 @@ export const generateAccessibilityReport = (colorSchema) => {
   console.group('🔍 WCAG Color Contrast Validation Report');
   
   if (allPass) {
-    console.log('✅ All colors pass WCAG AA standard (4.5:1 for text)');
   } else {
     console.error(`❌ ${issues.length} color contrast issues found:`);
     issues.forEach(issue => {
