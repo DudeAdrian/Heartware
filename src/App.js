@@ -5,6 +5,8 @@ import { SofieProvider } from "./context/SofieContext";
 import Home from "./pages/Home";
 import SofieLlamaWelcome from "./components/SofieLlamaWelcome";
 import Holistic from "./pages/Holistic";
+import ThetaBinauralPage from "./pages/holistic/ThetaBinauralPage";
+import Solfeggio528HzPage from "./pages/holistic/Solfeggio528HzPage";
 import MedicationInventory from "./pages/MedicationInventory";
 import Login from "./pages/Login";
 import Settings from "./pages/Settings";
@@ -60,6 +62,9 @@ const App = () => {
                 <Route path="/setup" element={<SetupWizard />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/holistic" element={<Holistic />} />
+                  <Route path="/holistic" element={<Holistic />} />
+                <Route path="/holistic/theta-binaural" element={<ThetaBinauralPage />} />
+                <Route path="/holistic/solfeggio-528hz" element={<Solfeggio528HzPage />} />
                 <Route path="/metrics" element={<PersonalHealthMetrics />} />
                 <Route path="/mindfulness" element={<Mindfulness />} />
                 <Route path="/nutrition" element={<Nutrition />} />

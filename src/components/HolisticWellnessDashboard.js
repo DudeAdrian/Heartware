@@ -88,8 +88,9 @@ const HolisticWellnessDashboard = ({ userState }) => {
           </GlassCard>
         </div>
       )}
+
     </div>
   );
-};
+}
 
 export default HolisticWellnessDashboard;
