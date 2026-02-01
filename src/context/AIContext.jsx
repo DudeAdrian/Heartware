@@ -55,6 +55,7 @@ export default function AIProvider({ children }) {
     
     switch (type) {
       case 'stream_chunk':
+        console.log('[AIContext] stream_chunk received:', payload?.content?.substring(0, 30));
         responseBufferRef.current += payload?.content || '';
         setCurrentResponse(responseBufferRef.current);
         setSofieState('speaking');

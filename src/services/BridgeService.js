@@ -304,15 +304,17 @@ class BridgeService {
         },
         this.currentAbortController.signal
       );
-      console.log('[BridgeService] streamWithFallback completed, full text length:', fullText?.length || 0);
+      console.log('[BridgeService] streamWithFallback completed, full text:', fullText?.substring(0, 50));
       
-      // If we got a response but no chunks were emitted (empty callback scenario),
-      // emit the full text now
+      // If no chunks were emitted, emit the full text now
       if (fullText && fullText.length > 0) {
+        console.log('[BridgeService] Emitting full text as single chunk');
         this.emit('stream_chunk', {
           payload: { content: fullText, isComplete: true },
           timestamp: Date.now()
         });
+      } else {
+        console.warn('[BridgeService] Empty response from API');
       }
       
       // Emit stream_end when complete

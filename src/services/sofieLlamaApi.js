@@ -122,7 +122,10 @@ export async function streamWithFallback(prompt, context = {}, onChunk = null, s
     }
     
     const data = await response.json();
+    console.log('[SofieLlamaApi] Raw response:', JSON.stringify(data).substring(0, 300));
+    
     const fullText = data.choices?.[0]?.message?.content || '';
+    console.log('[SofieLlamaApi] Extracted text length:', fullText.length);
     
     // Simulate streaming
     if (onChunk && fullText) {

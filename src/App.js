@@ -1,7 +1,9 @@
+import React, { useState } from "react";
 import RegionProvider from "./context/RegionContext";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { SofieProvider } from "./context/SofieContext";
+import AIProvider from "./context/AIContext";
 import Home from "./pages/Home";
 import SofieLlamaWelcome from "./components/SofieLlamaWelcome";
 import Holistic from "./pages/Holistic";
@@ -23,7 +25,13 @@ import Emergency from "./pages/Emergency";
 import Profile from "./pages/Profile";
 import SystemShell from "./components/SystemShellTouchOS";
 import SofieAI from "./pages/SofieAI";
-import SofieOnboarding from "./components/SofieOnboarding";
+import GalaxyVisualization from "./components/GalaxyCore/GalaxyVisualization";
+import AIOverlay from "./components/AIOverlay";
+import AIPresence from "./pages/AIPresence";
+
+// NEW: Sofie Presence System imports
+import GalaxySofie from "./components/GalaxySofie";
+import AIStatusBar from "./components/AIStatusBar";
 
 // The following imports are commented out because the files are not present or not implemented yet.
 // import HealthcareOperations from "./pages/HealthcareOperations";
@@ -49,37 +57,51 @@ if (window.ethereum && Object.getOwnPropertyDescriptor(window, 'ethereum')?.conf
 }
 
 const App = () => {
+  // Listen for AI command to navigate to dashboard
+  const [showDashboard, setShowDashboard] = useState(false);
+
+  // Handler to be called from AIPresence when user requests dashboard
+  const handleShowDashboard = () => setShowDashboard(true);
+
   return (
     <ErrorBoundary>
       <SofieProvider>
-        <RegionProvider>
-          <Router>
-            <SystemShell>
-              <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/" element={<SofieOnboarding />} />
-                <Route path="/dashboard" element={<Home />} />
-                <Route path="/setup" element={<SetupWizard />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/holistic" element={<Holistic />} />
+        <AIProvider>
+          <RegionProvider>
+            <Router>
+              <SystemShell>
+                <Routes>
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/" element={
+                    showDashboard ? <Home /> : <AIPresence onShowDashboard={handleShowDashboard} />
+                  } />
+                  <Route path="/setup" element={<SetupWizard />} />
+                  <Route path="/profile" element={<Profile />} />
                   <Route path="/holistic" element={<Holistic />} />
-                <Route path="/holistic/theta-binaural" element={<ThetaBinauralPage />} />
-                <Route path="/holistic/solfeggio-528hz" element={<Solfeggio528HzPage />} />
-                <Route path="/metrics" element={<PersonalHealthMetrics />} />
-                <Route path="/mindfulness" element={<Mindfulness />} />
-                <Route path="/nutrition" element={<Nutrition />} />
-                <Route path="/movement" element={<Movement />} />
-                <Route path="/medications" element={<MedicationInventory />} />
-                <Route path="/care-team" element={<CareTeam />} />
-                <Route path="/self-care" element={<SelfCare />} />
-                <Route path="/biofeedback" element={<Biofeedback />} />
-                <Route path="/sofie" element={<SofieAI />} />
-                <Route path="/records" element={<HealthRecords />} />
-                <Route path="/emergency" element={<Emergency />} />
-              </Routes>
-            </SystemShell>
-          </Router>
-        </RegionProvider>
+                  <Route path="/holistic/theta-binaural" element={<ThetaBinauralPage />} />
+                  <Route path="/holistic/solfeggio-528hz" element={<Solfeggio528HzPage />} />
+                  <Route path="/metrics" element={<PersonalHealthMetrics />} />
+                  <Route path="/mindfulness" element={<Mindfulness />} />
+                  <Route path="/nutrition" element={<Nutrition />} />
+                  <Route path="/movement" element={<Movement />} />
+                  <Route path="/medications" element={<MedicationInventory />} />
+                  <Route path="/care-team" element={<CareTeam />} />
+                  <Route path="/self-care" element={<SelfCare />} />
+                  <Route path="/biofeedback" element={<Biofeedback />} />
+                  <Route path="/sofie" element={<SofieAI />} />
+                  <Route path="/records" element={<HealthRecords />} />
+                  <Route path="/emergency" element={<Emergency />} />
+                  
+                  {/* NEW: Galaxy AI Presence Route */}
+                  <Route path="/galaxy" element={<GalaxySofie />} />
+                </Routes>
+                
+                {/* Persistent AI Status Bar */}
+                <AIStatusBar />
+              </SystemShell>
+            </Router>
+          </RegionProvider>
+        </AIProvider>
       </SofieProvider>
     </ErrorBoundary>
   );
