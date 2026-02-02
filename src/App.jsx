@@ -1,119 +1,180 @@
-import React, { useState, useCallback, useRef } from 'react';
-import { GalaxyScene } from './components/GalaxyScene';
-import { useSovereignVoice } from './hooks/useSovereignVoice';
-import { streamResponse } from './core/SofieCore';
+import { useState, useCallback } from 'react';
+import GalaxyScene from './components/GalaxyScene';
+import { streamConsciousness, captureVoice, speakText } from './core/SofieCore';
+// Import your actual Terratone component
+import GlassmorphicToneGenerator from './terratone/src/GlassmorphicToneGenerator';
 
-export default function App() {
-  const [displayText, setDisplayText] = useState('');
-  const [animationState, setAnimationState] = useState('idle'); // 'idle' | 'forming' | 'holding' | 'dissolving'
-  const [isListening, setIsListening] = useState(false);
-  const accumulatedTextRef = useRef('');
+function App() {
+  const [aiText, setAiText] = useState('');
+  const [userText, setUserText] = useState('');
+  const [status, setStatus] = useState('idle');
+  const [showTerratone, setShowTerratone] = useState(false);
 
-  const handleTranscript = useCallback(async (transcript) => {
-    if (!transcript || animationState !== 'idle') return;
+  const handleTalk = useCallback(async () => {
+    if (status !== 'idle') return;
     
-    setIsListening(false);
-    setAnimationState('forming');
-    accumulatedTextRef.current = '';
+    setStatus('listening');
+    const user = await captureVoice();
     
-    try {
-      await streamResponse(transcript, (word) => {
-        accumulatedTextRef.current += word;
-        setDisplayText(accumulatedTextRef.current);
-      });
-      
-      // Hold the text for 8 seconds
-      setAnimationState('holding');
-      await new Promise(r => setTimeout(r, 8000));
-      
-      // Dissolve and return to galaxy
-      setAnimationState('dissolving');
-      await new Promise(r => setTimeout(r, 1500));
-      
-      setDisplayText('');
-      setAnimationState('idle');
-      
-    } catch (err) {
-      console.error('AI stream failed:', err);
-      setAnimationState('idle');
+    if (!user) { 
+      setStatus('idle'); 
+      return; 
     }
-  }, [animationState]);
 
-  const { startListening, stopListening, speaking } = useSovereignVoice({
-    onTranscript: handleTranscript,
-    onSpeechEnd: () => setIsListening(false)
-  });
-
-  const handleVoiceStart = useCallback(() => {
-    if (animationState === 'idle') {
-      setIsListening(true);
-      startListening();
-    }
-  }, [animationState, startListening]);
-
-  const handleVoiceEnd = useCallback(() => {
-    setIsListening(false);
-    stopListening();
-  }, [stopListening]);
+    setUserText(user);
+    setStatus('thinking');
+    setAiText('');
+    
+    await streamConsciousness(
+      user,
+      (txt) => setAiText(txt),
+      async (fullText) => {
+        setStatus('speaking');
+        // CRITICAL FIX: Actually speak the text
+        await speakText(fullText);
+        setTimeout(() => { 
+          setStatus('idle'); 
+          setAiText(''); 
+        }, 2000);
+      },
+      () => setStatus('idle')
+    );
+  }, [status]);
 
   return (
-    <div style={{ width: '100vw', height: '100vh', background: '#000' }}>
-      <GalaxyScene
-        displayText={displayText}
-        animationState={animationState}
-        isListening={isListening}
-        onVoiceStart={handleVoiceStart}
-        onVoiceEnd={handleVoiceEnd}
-      />
-      
-      {/* Voice indicator */}
-      {isListening && (
+    <div style={{
+      width: '100vw',
+      height: '100vh',
+      background: '#000',
+      overflow: 'hidden',
+      display: 'flex',
+      flexDirection: 'column'
+    }}>
+      {/* SOFIE Banner */}
+      <div style={{
+        height: '50px',
+        background: 'rgba(0,0,0,0.9)',
+        borderBottom: '2px solid #9333ea',
+        display: 'flex',
+        alignItems: 'center',
+        padding: '0 20px',
+        zIndex: 100
+      }}>
+        <div style={{
+          color: '#a855f7',
+          fontWeight: 'bold',
+          fontSize: '12px',
+          marginRight: '15px',
+          letterSpacing: '2px'
+        }}>
+          SOFIE
+        </div>
+        <div style={{
+          flex: 1,
+          color: 'white',
+          fontSize: '16px',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis'
+        }}>
+          {aiText || 'Awaiting your voice...'}
+        </div>
+      </div>
+
+      {/* Galaxy */}
+      <div style={{ flex: 1, position: 'relative' }}>
+        <GalaxyScene status={status} />
+      </div>
+
+      {/* Terratone Toggle Button */}
+      <button 
+        onClick={() => setShowTerratone(!showTerratone)}
+        style={{
+          position: 'fixed',
+          bottom: '140px',
+          right: '30px',
+          zIndex: 100,
+          padding: '12px 24px',
+          background: showTerratone ? '#a855f7' : 'rgba(0,0,0,0.8)',
+          color: 'white',
+          border: '2px solid #a855f7',
+          borderRadius: '25px',
+          cursor: 'pointer',
+          fontSize: '14px',
+          fontWeight: 'bold',
+          boxShadow: showTerratone ? '0 0 30px rgba(168,85,247,0.5)' : '0 0 20px rgba(0,0,0,0.5)'
+        }}
+      >
+        {showTerratone ? '✕ Close Tones' : '∞ Terratone'}
+      </button>
+
+      {/* Terratone Panel - Your actual working component */}
+      {showTerratone && (
         <div style={{
           position: 'fixed',
-          bottom: 40,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 8,
-          color: '#9d4edd',
-          fontSize: 14,
-          pointerEvents: 'none',
-          zIndex: 100
+          bottom: '190px',
+          right: '30px',
+          width: '400px',
+          height: '600px',
+          background: 'rgba(10,10,20,0.95)',
+          border: '1px solid rgba(147,51,234,0.5)',
+          borderRadius: '20px',
+          zIndex: 101,
+          overflow: 'hidden',
+          backdropFilter: 'blur(20px)',
+          boxShadow: '0 0 50px rgba(0,0,0,0.9)'
         }}>
-          <span style={{
-            width: 8,
-            height: 8,
-            borderRadius: '50%',
-            background: '#ff0040',
-            animation: 'pulse 1s ease-in-out infinite'
-          }} />
-          Listening...
+          <GlassmorphicToneGenerator />
         </div>
       )}
-      
-      {/* Speaking indicator */}
-      {speaking && (
-        <div style={{
-          position: 'fixed',
-          bottom: 40,
-          right: 40,
-          width: 8,
-          height: 8,
-          borderRadius: '50%',
-          background: '#3a0ca3',
-          animation: 'pulse 0.5s ease-in-out infinite',
-          pointerEvents: 'none',
-          zIndex: 100
-        }} />
-      )}
-      
-      <style>{`
-        @keyframes pulse {
-          0%, 100% { opacity: 1; transform: scale(1); }
-          50% { opacity: 0.5; transform: scale(1.2); }
-        }
-      `}</style>
+
+      {/* Bottom Controls */}
+      <div style={{
+        height: '100px',
+        background: 'rgba(0,0,0,0.95)',
+        borderTop: '1px solid #9333ea',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '8px',
+        zIndex: 100
+      }}>
+        <div style={{ 
+          color: '#3b82f6', 
+          fontSize: '12px',
+          maxWidth: '80%',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap'
+        }}>
+          <strong>YOU:</strong> {userText || '...'}
+        </div>
+
+        <button 
+          onClick={handleTalk}
+          disabled={status !== 'idle'}
+          style={{
+            padding: '12px 40px',
+            fontSize: '16px',
+            background: status === 'idle' 
+              ? 'linear-gradient(45deg, #ff69b4, #9336eb)' 
+              : '#333',
+            color: 'white',
+            border: 'none',
+            borderRadius: '25px',
+            cursor: status === 'idle' ? 'pointer' : 'wait',
+            boxShadow: status === 'idle' ? '0 0 30px rgba(168,85,247,0.3)' : 'none'
+          }}
+        >
+          {status === 'listening' ? 'Listening...' :
+           status === 'thinking' ? 'Processing...' :
+           status === 'speaking' ? 'Speaking...' :
+           'Talk to Sofie'}
+        </button>
+      </div>
     </div>
   );
 }
+
+export default App;

@@ -1,235 +1,135 @@
-import { useEffect, useRef } from 'react';
-import * as THREE from 'three';
+const CONFIG = {
+  AI_ENDPOINT: 'http://localhost:8001/v1/chat/completions',
+  SYSTEM_PROMPT: `You are Sofie (S.O.F.I.E.), a warm wellness companion. Keep responses concise (1-2 sentences). Never spell out S-O-F-I-E, use "Sofie".`
+};
 
-export default function GalaxyScene({ status }) {
-  const mountRef = useRef(null);
-  const rendererRef = useRef(null);
-  const sceneRef = useRef(null);
-  const cameraRef = useRef(null);
-  const meshRef = useRef(null);
-  const frameIdRef = useRef(null);
-  const particleDataRef = useRef([]);
-  const timeRef = useRef(0);
-  const speedRef = useRef(0.08);
-  const formationCompleteRef = useRef(false);
-  const formationProgressRef = useRef(0);
-
-  // Update speed based on status without remounting
-  useEffect(() => {
-    if (status === 'thinking') speedRef.current = 0.25;
-    else if (status === 'speaking') speedRef.current = 0.15;
-    else speedRef.current = 0.08;
-  }, [status]);
-
-  // ONE-TIME INIT - Never remounts
-  useEffect(() => {
-    if (!mountRef.current || rendererRef.current) return; // Prevent remount
-    
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x000208);
-    sceneRef.current = scene;
-    
-    const camera = new THREE.PerspectiveCamera(55, window.innerWidth/window.innerHeight, 0.1, 1000);
-    camera.position.set(0, 25, 35);
-    camera.lookAt(0, 0, 0);
-    cameraRef.current = camera;
-    
-    const renderer = new THREE.WebGLRenderer({ 
-      antialias: true, 
-      alpha: true, 
-      powerPreference: "high-performance",
-      preserveDrawingBuffer: false
+// Real-time streaming function
+export const streamConsciousness = async (message, onWord, onComplete, onError) => {
+  try {
+    const response = await fetch(CONFIG.AI_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: [
+          {role: 'system', content: CONFIG.SYSTEM_PROMPT},
+          {role: 'user', content: message}
+        ],
+        temperature: 0.75,
+        max_tokens: 150,
+        stream: true
+      })
     });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Performance cap
-    mountRef.current.appendChild(renderer.domElement);
-    rendererRef.current = renderer;
-
-    const count = 35000; // Reduced from 50k for performance stability
-    const data = [];
     
-    // Generate particles once
-    for(let i = 0; i < count; i++) {
-      const arm = i % 3;
-      const armAngle = (arm / 3) * Math.PI * 2;
-      const r = Math.pow(Math.random(), 0.7) * 20;
-      const twist = r * 0.4;
-      const angle = armAngle + twist + (Math.random()-0.5)*0.8;
-      const thickness = r < 4 ? 2.5 : 0.8;
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let fullText = '';
+    let buffer = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
       
-      const scatterR = 80 + Math.random() * 50;
-      const scatterTheta = Math.random() * Math.PI * 2;
-      const scatterPhi = Math.acos(2*Math.random()-1);
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop();
       
-      data.push({
-        gx: r * Math.cos(angle),
-        gy: (Math.random()-0.5) * thickness,
-        gz: r * Math.sin(angle) * 0.7,
-        gr: r,
-        gangle: angle,
-        sx: scatterR * Math.sin(scatterPhi) * Math.cos(scatterTheta),
-        sy: scatterR * Math.sin(scatterPhi) * Math.sin(scatterTheta),
-        sz: scatterR * Math.cos(scatterPhi),
-        type: r < 3 ? 'core' : r < 8 ? 'inner' : r < 14 ? 'mid' : 'outer',
-        phase: Math.random() * Math.PI * 2
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (trimmed.startsWith('data: ')) {
+          const data = trimmed.slice(6);
+          if (data === '[DONE]') continue;
+          
+          try {
+            const parsed = JSON.parse(data);
+            const content = parsed.choices?.[0]?.delta?.content || '';
+            
+            if (content) {
+              fullText += content;
+              const cleanText = fullText.replace(/\bS\.O\.F\.I\.E\.\b/g, 'Sofie');
+              if (onWord) onWord(cleanText);
+            }
+          } catch (e) {}
+        }
+      }
+    }
+    
+    const finalClean = fullText.replace(/\bS\.O\.F\.I\.E\.\b/g, 'Sofie');
+    if (onComplete) onComplete(finalClean);
+    return finalClean;
+    
+  } catch (err) {
+    console.error('[Sofie]', err);
+    if (onError) onError(err.message);
+    return '';
+  }
+};
+
+export const captureVoice = () => {
+  return new Promise((resolve) => {
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+      resolve('');
+      return;
+    }
+    
+    const rec = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    rec.lang = 'en-US';
+    rec.continuous = true;
+    rec.interimResults = false;
+    rec.maxAlternatives = 1;
+    
+    let finalTranscript = '';
+    let silenceTimeout;
+    
+    rec.onresult = (e) => {
+      const transcript = e.results[e.results.length - 1][0].transcript;
+      if (e.results[e.results.length - 1].isFinal) {
+        finalTranscript += transcript + ' ';
+      }
+      clearTimeout(silenceTimeout);
+      silenceTimeout = setTimeout(() => rec.stop(), 2000);
+    };
+    
+    rec.onerror = () => resolve(finalTranscript.trim());
+    rec.onend = () => resolve(finalTranscript.trim());
+    
+    silenceTimeout = setTimeout(() => rec.stop(), 5000);
+    rec.start();
+  });
+};
+
+export const speakText = async (text) => {
+  if (!text) return;
+  const cleanText = text.replace(/\bS\.O\.F\.I\.E\.\b/g, 'Sofie').trim();
+  
+  try {
+    // Try Piper on port 5000 first
+    const response = await fetch('http://localhost:5000', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: cleanText })
+    });
+    
+    if (response.ok) {
+      const audioBlob = await response.blob();
+      const audioUrl = URL.createObjectURL(audioBlob);
+      const audio = new Audio(audioUrl);
+      return new Promise((resolve) => {
+        audio.onended = () => { URL.revokeObjectURL(audioUrl); resolve(); };
+        audio.play();
       });
     }
-    particleDataRef.current = data;
-    
-    const geometry = new THREE.BufferGeometry();
-    const positions = new Float32Array(count * 3);
-    const colors = new Float32Array(count * 3);
-    
-    // Create texture
-    const canvas = document.createElement('canvas');
-    canvas.width = 64; canvas.height = 64; // Smaller for performance
-    const ctx = canvas.getContext('2d');
-    const grad = ctx.createRadialGradient(32,32,0,32,32,32);
-    grad.addColorStop(0, 'rgba(255,255,255,1)');
-    grad.addColorStop(0.3, 'rgba(255,220,255,0.4)');
-    grad.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = grad;
-    ctx.fillRect(0,0,64,64);
-    
-    const palette = {
-      core: new THREE.Color(0xffffff),
-      inner: new THREE.Color(0xff69b4),
-      mid: new THREE.Color(0x9370db),
-      outer: new THREE.Color(0x4169e1)
-    };
-    
-    // Initialize positions (scattered)
-    for(let i = 0; i < count; i++) {
-      const i3 = i * 3;
-      const p = data[i];
-      positions[i3] = p.sx;
-      positions[i3+1] = p.sy;
-      positions[i3+2] = p.sz;
-      
-      const c = palette[p.type];
-      colors[i3] = c.r;
-      colors[i3+1] = c.g;
-      colors[i3+2] = c.b;
-    }
-    
-    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-    
-    const texture = new THREE.CanvasTexture(canvas);
-    
-    const material = new THREE.PointsMaterial({
-      size: 0.4,
-      map: texture,
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.85,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false,
-      sizeAttenuation: true
-    });
-    
-    const mesh = new THREE.Points(geometry, material);
-    scene.add(mesh);
-    meshRef.current = mesh;
-    
-    // ANIMATION LOOP
-    const animate = () => {
-      frameIdRef.current = requestAnimationFrame(animate);
-      timeRef.current += 0.016;
-      
-      const t = timeRef.current;
-      const pos = mesh.geometry.attributes.position.array;
-      const pData = particleDataRef.current;
-      
-      // Formation animation (runs once, then stays formed)
-      if (!formationCompleteRef.current) {
-        formationProgressRef.current = Math.min(formationProgressRef.current + 0.005, 1);
-        if (formationProgressRef.current >= 1) formationCompleteRef.current = true;
-      }
-      
-      const formation = formationProgressRef.current;
-      const rotation = t * speedRef.current;
-      const pulse = 1 + Math.sin(t * 1.5) * 0.05; // Gentler pulse
-      
-      // Only update subset during interaction for performance
-      const updateCount = (status !== 'idle') ? count : Math.floor(count * 0.3); // Update all when active
-      
-      for(let i = 0; i < updateCount; i++) {
-        const i3 = i * 3;
-        const p = pData[i];
-        
-        const orbitAngle = p.gangle + rotation * (20 / (p.gr + 2));
-        const r = p.gr * pulse;
-        
-        let tx = r * Math.cos(orbitAngle);
-        let ty = p.gy + Math.sin(t + p.phase) * 0.2;
-        let tz = r * Math.sin(orbitAngle) * 0.7;
-        
-        // Interaction effect: particles rise during thinking/speaking
-        if ((status === 'thinking' || status === 'speaking') && i < 5000) {
-          ty += 12 + Math.sin(t * 3 + p.phase * 2) * 3;
-        }
-        
-        // Smooth blend between scatter and galaxy
-        const blend = formation < 0.3 ? formation * formation * 3 : 
-                     formation < 0.7 ? 0.27 + (formation - 0.3) * 1.5 : 
-                     0.87 + (formation - 0.7) * 0.43;
-        const smoothBlend = blend * blend * (3 - 2*blend);
-        
-        pos[i3] += (p.sx * (1-smoothBlend) + tx * smoothBlend - pos[i3]) * 0.05;
-        pos[i3+1] += (p.sy * (1-smoothBlend) + ty * smoothBlend - pos[i3+1]) * 0.05;
-        pos[i3+2] += (p.sz * (1-smoothBlend) + tz * smoothBlend - pos[i3+2]) * 0.05;
-      }
-      
-      mesh.geometry.attributes.position.needsUpdate = true;
-      
-      // Gentle camera drift
-      camera.position.x = Math.sin(t * 0.015) * 3;
-      camera.position.z = 35 + Math.cos(t * 0.015) * 3;
-      camera.lookAt(0, 0, 0);
-      
-      renderer.render(scene, camera);
-    };
-    
-    animate();
-    
-    // Resize handler
-    const handleResize = () => {
-      if (!cameraRef.current || !rendererRef.current) return;
-      cameraRef.current.aspect = window.innerWidth/window.innerHeight;
-      cameraRef.current.updateProjectionMatrix();
-      rendererRef.current.setSize(window.innerWidth, window.innerHeight);
-    };
-    
-    window.addEventListener('resize', handleResize);
-    
-    // Cleanup only on unmount (shouldn't happen in normal use)
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      cancelAnimationFrame(frameIdRef.current);
-      if (rendererRef.current && mountRef.current) {
-        try {
-          mountRef.current.removeChild(rendererRef.current.domElement);
-        } catch(e) {}
-      }
-      geometry.dispose();
-      material.dispose();
-      renderer.dispose();
-    };
-  }, []); // Empty deps = never remount
-
-  return (
-    <div style={{ 
-      position: 'absolute', 
-      top: 0, 
-      left: 0, 
-      width: '100vw', 
-      height: '100vh', 
-      background: '#000208', 
-      overflow: 'hidden',
-      zIndex: 0 
-    }}>
-      <div ref={mountRef} style={{ width: '100%', height: '100%' }} />
-    </div>
-  );
-}
+  } catch (e) {
+    // Piper not running, use browser TTS
+  }
+  
+  // Browser fallback
+  return new Promise((resolve) => {
+    const u = new SpeechSynthesisUtterance(cleanText);
+    u.rate = 0.9;
+    u.pitch = 1;
+    window.speechSynthesis.speak(u);
+    u.onend = resolve;
+  });
+};
