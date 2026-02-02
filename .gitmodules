@@ -1,0 +1,3 @@
+[submodule "src/terratone"]
+	path = src/terratone
+	url = https://github.com/DudeAdrian/terratone.git
