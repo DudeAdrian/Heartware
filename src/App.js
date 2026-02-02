@@ -1,11 +1,30 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import GalaxyScene from './components/GalaxyScene';
+import { ToneIndicator } from './components/ToneIndicator';
 import { streamConsciousness, captureVoice } from './core/SofieCore';
+import { terratone } from './core/TerratoneBridge';
 
 function App() {
   const [aiText, setAiText] = useState('');
   const [userText, setUserText] = useState('');
   const [status, setStatus] = useState('idle');
+  const [freq, setFreq] = useState(432);
+
+  // Start ambient tone on first user interaction
+  useEffect(() => {
+    const initAudio = () => {
+      terratone.start('default');
+      window.removeEventListener('click', initAudio);
+    };
+    window.addEventListener('click', initAudio);
+    return () => window.removeEventListener('click', initAudio);
+  }, []);
+
+  // Sync Terratone with conversation state
+  useEffect(() => {
+    terratone.syncWithSofie(status);
+    setFreq(terratone.currentFrequency);
+  }, [status]);
 
   const handleTalk = useCallback(async () => {
     if (status !== 'idle') return;
@@ -22,12 +41,25 @@ function App() {
     setStatus('thinking');
     setAiText('');
     
+    // Analyze user message for tone selection
+    const lowerUser = user.toLowerCase();
+    if (lowerUser.includes('anxious') || lowerUser.includes('stress')) {
+      terratone.transition('grounding'); // 174Hz for anxiety
+    } else if (lowerUser.includes('love') || lowerUser.includes('heart')) {
+      terratone.transition('love'); // 528Hz
+    }
+    
     await streamConsciousness(
       user,
-      (txt) => setAiText(txt),
+      (txt) => {
+        setAiText(txt);
+        // Detect sentiment in streaming text for real-time tone adjustment
+        if (txt.includes('breathe') || txt.includes('calm')) {
+          terratone.transition('grounding', 1);
+        }
+      },
       () => {
         setStatus('speaking');
-        // Auto-return to idle after 3 seconds of completion
         setTimeout(() => { 
           setStatus('idle'); 
           setAiText(''); 
@@ -46,7 +78,7 @@ function App() {
       display: 'flex',
       flexDirection: 'column'
     }}>
-      {/* TOP BANNER */}
+      {/* TOP BANNER - AI Response */}
       <div style={{
         height: '50px',
         background: 'rgba(0,0,0,0.9)',
@@ -77,9 +109,46 @@ function App() {
         </div>
       </div>
 
-      {/* GALAXY - Persistent */}
+      {/* GALAXY */}
       <div style={{ flex: 1, position: 'relative' }}>
         <GalaxyScene status={status} />
+      </div>
+
+      {/* TERRATONE INDICATOR */}
+      <ToneIndicator frequency={freq} isPlaying={status !== 'idle'} />
+      
+      {/* Add manual tone controls (subtle) */}
+      <div style={{
+        position: 'fixed',
+        bottom: '140px',
+        left: '30px',
+        display: 'flex',
+        gap: '5px',
+        zIndex: 100
+      }}>
+        {[432, 528, 639, 852].map(hz => (
+          <button
+            key={hz}
+            onClick={() => {
+              terratone.transition(hz === 432 ? 'default' : 
+                                 hz === 528 ? 'love' : 
+                                 hz === 639 ? 'connection' : 'intuition');
+              setFreq(hz);
+            }}
+            style={{
+              width: '30px',
+              height: '30px',
+              borderRadius: '50%',
+              border: freq === hz ? '2px solid #a855f7' : '1px solid rgba(255,255,255,0.2)',
+              background: freq === hz ? 'rgba(168,85,247,0.3)' : 'rgba(0,0,0,0.5)',
+              color: 'white',
+              fontSize: '10px',
+              cursor: 'pointer'
+            }}
+          >
+            {hz}
+          </button>
+        ))}
       </div>
 
       {/* BOTTOM CONTROLS */}
@@ -105,7 +174,7 @@ function App() {
             padding: '12px 40px',
             fontSize: '16px',
             background: status === 'idle' 
-              ? 'linear-gradient(45deg, #ff69b4, #9333ea)' 
+              ? 'linear-gradient(45deg, #ff69b4, #9336eb)' 
               : '#333',
             color: 'white',
             border: 'none',
