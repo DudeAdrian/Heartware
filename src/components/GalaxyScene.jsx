@@ -4,51 +4,36 @@ import * as THREE from 'three';
 export default function GalaxyScene({ status }) {
   const mountRef = useRef(null);
   const rendererRef = useRef(null);
-  const sceneRef = useRef(null);
-  const cameraRef = useRef(null);
-  const meshRef = useRef(null);
   const frameIdRef = useRef(null);
   const particleDataRef = useRef([]);
   const timeRef = useRef(0);
   const speedRef = useRef(0.08);
-  const formationCompleteRef = useRef(false);
-  const formationProgressRef = useRef(0);
 
-  // Update speed based on status without remounting
   useEffect(() => {
     if (status === 'thinking') speedRef.current = 0.25;
     else if (status === 'speaking') speedRef.current = 0.15;
     else speedRef.current = 0.08;
   }, [status]);
 
-  // ONE-TIME INIT - Never remounts
   useEffect(() => {
-    if (!mountRef.current || rendererRef.current) return; // Prevent remount
+    if (!mountRef.current) return;
     
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x000208);
-    sceneRef.current = scene;
     
     const camera = new THREE.PerspectiveCamera(55, window.innerWidth/window.innerHeight, 0.1, 1000);
     camera.position.set(0, 25, 35);
     camera.lookAt(0, 0, 0);
-    cameraRef.current = camera;
     
-    const renderer = new THREE.WebGLRenderer({ 
-      antialias: true, 
-      alpha: true, 
-      powerPreference: "high-performance",
-      preserveDrawingBuffer: false
-    });
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Performance cap
+    renderer.setPixelRatio(window.devicePixelRatio);
     mountRef.current.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
-    const count = 35000; // Reduced from 50k for performance stability
+    const count = 50000;
     const data = [];
     
-    // Generate particles once
     for(let i = 0; i < count; i++) {
       const arm = i % 3;
       const armAngle = (arm / 3) * Math.PI * 2;
@@ -80,16 +65,16 @@ export default function GalaxyScene({ status }) {
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
     
-    // Create texture
     const canvas = document.createElement('canvas');
-    canvas.width = 64; canvas.height = 64; // Smaller for performance
+    canvas.width = 256; canvas.height = 256;
     const ctx = canvas.getContext('2d');
-    const grad = ctx.createRadialGradient(32,32,0,32,32,32);
+    const grad = ctx.createRadialGradient(128,128,0,128,128,128);
     grad.addColorStop(0, 'rgba(255,255,255,1)');
-    grad.addColorStop(0.3, 'rgba(255,220,255,0.4)');
+    grad.addColorStop(0.2, 'rgba(255,220,255,0.6)');
+    grad.addColorStop(0.5, 'rgba(200,100,255,0.2)');
     grad.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.fillStyle = grad;
-    ctx.fillRect(0,0,64,64);
+    ctx.fillRect(0,0,256,256);
     
     const palette = {
       core: new THREE.Color(0xffffff),
@@ -98,7 +83,6 @@ export default function GalaxyScene({ status }) {
       outer: new THREE.Color(0x4169e1)
     };
     
-    // Initialize positions (scattered)
     for(let i = 0; i < count; i++) {
       const i3 = i * 3;
       const p = data[i];
@@ -115,14 +99,12 @@ export default function GalaxyScene({ status }) {
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
     
-    const texture = new THREE.CanvasTexture(canvas);
-    
     const material = new THREE.PointsMaterial({
-      size: 0.4,
-      map: texture,
+      size: 0.35,
+      map: new THREE.CanvasTexture(canvas),
       vertexColors: true,
       transparent: true,
-      opacity: 0.85,
+      opacity: 0.9,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
       sizeAttenuation: true
@@ -130,9 +112,7 @@ export default function GalaxyScene({ status }) {
     
     const mesh = new THREE.Points(geometry, material);
     scene.add(mesh);
-    meshRef.current = mesh;
     
-    // ANIMATION LOOP
     const animate = () => {
       frameIdRef.current = requestAnimationFrame(animate);
       timeRef.current += 0.016;
@@ -140,21 +120,11 @@ export default function GalaxyScene({ status }) {
       const t = timeRef.current;
       const pos = mesh.geometry.attributes.position.array;
       const pData = particleDataRef.current;
-      
-      // Formation animation (runs once, then stays formed)
-      if (!formationCompleteRef.current) {
-        formationProgressRef.current = Math.min(formationProgressRef.current + 0.005, 1);
-        if (formationProgressRef.current >= 1) formationCompleteRef.current = true;
-      }
-      
-      const formation = formationProgressRef.current;
+      const formation = Math.min(1, t / 25);
       const rotation = t * speedRef.current;
-      const pulse = 1 + Math.sin(t * 1.5) * 0.05; // Gentler pulse
+      const pulse = 1 + Math.sin(t * 2) * 0.1;
       
-      // Only update subset during interaction for performance
-      const updateCount = (status !== 'idle') ? count : Math.floor(count * 0.3); // Update all when active
-      
-      for(let i = 0; i < updateCount; i++) {
+      for(let i = 0; i < count; i++) {
         const i3 = i * 3;
         const p = pData[i];
         
@@ -162,30 +132,27 @@ export default function GalaxyScene({ status }) {
         const r = p.gr * pulse;
         
         let tx = r * Math.cos(orbitAngle);
-        let ty = p.gy + Math.sin(t + p.phase) * 0.2;
+        let ty = p.gy + Math.sin(t + p.phase) * 0.3;
         let tz = r * Math.sin(orbitAngle) * 0.7;
         
-        // Interaction effect: particles rise during thinking/speaking
-        if ((status === 'thinking' || status === 'speaking') && i < 5000) {
-          ty += 12 + Math.sin(t * 3 + p.phase * 2) * 3;
+        if ((status === 'thinking' || status === 'speaking') && i < 3000) {
+          ty += 15 + Math.sin(t * 2 + p.phase) * 5;
         }
         
-        // Smooth blend between scatter and galaxy
-        const blend = formation < 0.3 ? formation * formation * 3 : 
-                     formation < 0.7 ? 0.27 + (formation - 0.3) * 1.5 : 
-                     0.87 + (formation - 0.7) * 0.43;
-        const smoothBlend = blend * blend * (3 - 2*blend);
+        let blend;
+        if(formation < 0.3) blend = formation * formation * 3;
+        else if(formation < 0.7) blend = 0.27 + (formation - 0.3) * 1.5;
+        else blend = 0.87 + (formation - 0.7) * 0.43;
+        blend = blend * blend * (3 - 2*blend);
         
-        pos[i3] += (p.sx * (1-smoothBlend) + tx * smoothBlend - pos[i3]) * 0.05;
-        pos[i3+1] += (p.sy * (1-smoothBlend) + ty * smoothBlend - pos[i3+1]) * 0.05;
-        pos[i3+2] += (p.sz * (1-smoothBlend) + tz * smoothBlend - pos[i3+2]) * 0.05;
+        pos[i3] += (p.sx * (1-blend) + tx * blend - pos[i3]) * 0.05;
+        pos[i3+1] += (p.sy * (1-blend) + ty * blend - pos[i3+1]) * 0.05;
+        pos[i3+2] += (p.sz * (1-blend) + tz * blend - pos[i3+2]) * 0.05;
       }
       
       mesh.geometry.attributes.position.needsUpdate = true;
-      
-      // Gentle camera drift
-      camera.position.x = Math.sin(t * 0.015) * 3;
-      camera.position.z = 35 + Math.cos(t * 0.015) * 3;
+      camera.position.x = Math.sin(t * 0.02) * 5;
+      camera.position.z = 35 + Math.cos(t * 0.02) * 5;
       camera.lookAt(0, 0, 0);
       
       renderer.render(scene, camera);
@@ -193,30 +160,25 @@ export default function GalaxyScene({ status }) {
     
     animate();
     
-    // Resize handler
     const handleResize = () => {
-      if (!cameraRef.current || !rendererRef.current) return;
-      cameraRef.current.aspect = window.innerWidth/window.innerHeight;
-      cameraRef.current.updateProjectionMatrix();
-      rendererRef.current.setSize(window.innerWidth, window.innerHeight);
+      camera.aspect = window.innerWidth/window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
     };
     
     window.addEventListener('resize', handleResize);
     
-    // Cleanup only on unmount (shouldn't happen in normal use)
     return () => {
       window.removeEventListener('resize', handleResize);
       cancelAnimationFrame(frameIdRef.current);
-      if (rendererRef.current && mountRef.current) {
-        try {
-          mountRef.current.removeChild(rendererRef.current.domElement);
-        } catch(e) {}
+      if (mountRef.current && renderer.domElement && mountRef.current.contains(renderer.domElement)) {
+        mountRef.current.removeChild(renderer.domElement);
       }
       geometry.dispose();
       material.dispose();
       renderer.dispose();
     };
-  }, []); // Empty deps = never remount
+  }, [status]);
 
   return (
     <div style={{ 

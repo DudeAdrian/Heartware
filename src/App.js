@@ -1,96 +1,126 @@
+import { useState, useCallback } from 'react';
+import GalaxyScene from './components/GalaxyScene';
+import { streamConsciousness, captureVoice } from './core/SofieCore';
 
-import RegionProvider from "./context/RegionContext";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import ErrorBoundary from "./components/ErrorBoundary";
-import { SofieProvider } from "./context/SofieContext";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Settings from "./pages/Settings";
-import SetupWizard from "./pages/SetupWizard";
-import PersonalHealthMetrics from "./pages/PersonalHealthMetrics";
-import Mindfulness from "./pages/Mindfulness";
-import Nutrition from "./pages/Nutrition";
-import Movement from "./pages/Movement";
-import CareTeam from "./pages/CareTeam";
-import SelfCare from "./pages/SelfCare";
-import Biofeedback from "./pages/Biofeedback";
-import HealthRecords from "./pages/HealthRecords";
-import Emergency from "./pages/Emergency";
-import Profile from "./pages/Profile";
-import SystemShell from "./components/SystemShellTouchOS";
+function App() {
+  const [aiText, setAiText] = useState('');
+  const [userText, setUserText] = useState('');
+  const [status, setStatus] = useState('idle');
 
-// The following imports are commented out because the files are not present or not implemented yet.
-// import HealthcareOperations from "./pages/HealthcareOperations";
-// import PatientWellbeing from "./pages/PatientWellbeing";
-// import MedicationInventory from "./pages/MedicationInventory";
-// import PatientOutcomes from "./pages/PatientOutcomes";
-// import MedicalDevices from "./pages/MedicalDevices";
-// import HealthOutcomeTracking from "./pages/HealthOutcomeTracking";
-// import ClinicalPredictions from "./pages/ClinicalPredictions";
-// import Wellness from "./pages/Wellness";
-// import PersonalHerbalJournal from "./pages/PersonalHerbalJournal";
-// import AlertCenter from "./pages/AlertCenter";
-// import KnowledgeBase from "./pages/KnowledgeBase";
-// import Services from "./pages/Services";
-// import Map from "./pages/Map";
-// import HealthSystemAdmin from "./pages/HealthSystemAdmin";
-// import Governance from "./pages/Governance";
-// import Resilience from "./pages/Resilience";
+  const handleTalk = useCallback(async () => {
+    if (status !== 'idle') return;
+    
+    setStatus('listening');
+    const user = await captureVoice();
+    
+    if (!user) { 
+      setStatus('idle'); 
+      return; 
+    }
 
-// Block extensions trying to redefine ethereum
-if (window.ethereum && Object.getOwnPropertyDescriptor(window, 'ethereum')?.configurable === false) {
-  console.warn("Extension attempted to redefine window.ethereum — skipping.");
-}
+    setUserText(user);
+    setStatus('thinking');
+    setAiText('');
+    
+    await streamConsciousness(
+      user,
+      (txt) => setAiText(txt),
+      () => {
+        setStatus('speaking');
+        // Auto-return to idle after 3 seconds of completion
+        setTimeout(() => { 
+          setStatus('idle'); 
+          setAiText(''); 
+        }, 3000);
+      },
+      () => setStatus('idle')
+    );
+  }, [status]);
 
-const App = () => {
   return (
-    <ErrorBoundary>
-      <SofieProvider>
-        <RegionProvider>
-          <Router>
-            <SystemShell>
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/" element={<Home />} />
-              <Route path="/setup" element={<SetupWizard />} />
-              
+    <div style={{
+      width: '100vw',
+      height: '100vh',
+      background: '#000',
+      overflow: 'hidden',
+      display: 'flex',
+      flexDirection: 'column'
+    }}>
+      {/* TOP BANNER */}
+      <div style={{
+        height: '50px',
+        background: 'rgba(0,0,0,0.9)',
+        borderBottom: '2px solid #9333ea',
+        display: 'flex',
+        alignItems: 'center',
+        padding: '0 20px',
+        zIndex: 100
+      }}>
+        <div style={{
+          color: '#a855f7',
+          fontWeight: 'bold',
+          fontSize: '12px',
+          marginRight: '15px',
+          letterSpacing: '2px'
+        }}>
+          SOFIE
+        </div>
+        <div style={{
+          flex: 1,
+          color: 'white',
+          fontSize: '16px',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis'
+        }}>
+          {aiText || (status === 'listening' ? 'Listening...' : 'Awaiting your voice...')}
+        </div>
+      </div>
 
-              {/* Extensions and Core Pages */}
-              <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/setup" element={<SetupWizard />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/holistic" element={<Home />} /> {/* Optionally replace with HolisticWellnessDashboard if direct */}
-              <Route path="/metrics" element={<PersonalHealthMetrics />} />
-              <Route path="/mindfulness" element={<Mindfulness />} />
-              <Route path="/nutrition" element={<Nutrition />} />
-              <Route path="/movement" element={<Movement />} />
-              <Route path="/medications" element={<Home />} /> {/* Optionally replace with MedicationDashboard if direct */}
-              <Route path="/care-team" element={<CareTeam />} />
-              <Route path="/self-care" element={<SelfCare />} />
-              <Route path="/biofeedback" element={<Biofeedback />} />
-              <Route path="/records" element={<HealthRecords />} />
-              <Route path="/emergency" element={<Emergency />} />
+      {/* GALAXY - Persistent */}
+      <div style={{ flex: 1, position: 'relative' }}>
+        <GalaxyScene status={status} />
+      </div>
 
-              {/* Extension Dashboards */}
-              <Route path="/holistic" element={<Home />} /> {/* Optionally replace with HolisticWellnessDashboard if direct */}
-              <Route path="/metrics" element={<PersonalHealthMetrics />} />
-              <Route path="/mindfulness" element={<Mindfulness />} />
-              <Route path="/nutrition" element={<Nutrition />} />
-              <Route path="/movement" element={<Movement />} />
-              <Route path="/medications" element={<Home />} /> {/* Optionally replace with MedicationDashboard if direct */}
-              <Route path="/care-team" element={<CareTeam />} />
-              <Route path="/self-care" element={<SelfCare />} />
-              <Route path="/biofeedback" element={<Biofeedback />} />
-              <Route path="/records" element={<HealthRecords />} />
-              <Route path="/emergency" element={<Emergency />} />
-            </Routes>
-          </SystemShell>
-        </Router>
-        </RegionProvider>
-      </SofieProvider>
-    </ErrorBoundary>
+      {/* BOTTOM CONTROLS */}
+      <div style={{
+        height: '100px',
+        background: 'rgba(0,0,0,0.95)',
+        borderTop: '1px solid #9333ea',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '8px',
+        zIndex: 100
+      }}>
+        <div style={{ color: '#3b82f6', fontSize: '12px' }}>
+          <strong>YOU:</strong> {userText || '...'}
+        </div>
+
+        <button 
+          onClick={handleTalk}
+          disabled={status !== 'idle'}
+          style={{
+            padding: '12px 40px',
+            fontSize: '16px',
+            background: status === 'idle' 
+              ? 'linear-gradient(45deg, #ff69b4, #9333ea)' 
+              : '#333',
+            color: 'white',
+            border: 'none',
+            borderRadius: '25px',
+            cursor: status === 'idle' ? 'pointer' : 'wait'
+          }}
+        >
+          {status === 'listening' ? 'Listening...' :
+           status === 'thinking' ? 'Processing...' :
+           status === 'speaking' ? 'Speaking...' :
+           'Talk to Sofie'}
+        </button>
+      </div>
+    </div>
   );
-};
+}
 
 export default App;
