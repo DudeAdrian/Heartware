@@ -1,0 +1,9 @@
+﻿version: '3.8'
+
+services:
+  heartware:
+    build: .
+    ports:
+      - "3000:80"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8001
