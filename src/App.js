@@ -1,195 +1,168 @@
-import { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import GalaxyScene from './components/GalaxyScene';
-import { ToneIndicator } from './components/ToneIndicator';
-import { streamConsciousness, captureVoice } from './core/SofieCore';
-import { terratone } from './core/TerratoneBridge';
+import { useSofieCore } from './core/SofieCore';
+import TerratoneModal from './components/TerratoneModal';
 
-function App() {
-  const [aiText, setAiText] = useState('');
-  const [userText, setUserText] = useState('');
-  const [status, setStatus] = useState('idle');
-  const [freq, setFreq] = useState(432);
+export default function App() {
+  const [showTerratone, setShowTerratone] = useState(false);
+  const { speak, listening, transcript, response, toggleListening } = useSofieCore();
 
-  // Start ambient tone on first user interaction
-  useEffect(() => {
-    const initAudio = () => {
-      terratone.start('default');
-      window.removeEventListener('click', initAudio);
-    };
-    window.addEventListener('click', initAudio);
-    return () => window.removeEventListener('click', initAudio);
-  }, []);
-
-  // Sync Terratone with conversation state
-  useEffect(() => {
-    terratone.syncWithSofie(status);
-    setFreq(terratone.currentFrequency);
-  }, [status]);
-
-  const handleTalk = useCallback(async () => {
-    if (status !== 'idle') return;
-    
-    setStatus('listening');
-    const user = await captureVoice();
-    
-    if (!user) { 
-      setStatus('idle'); 
-      return; 
+  const handleInteraction = useCallback(() => {
+    if (listening) {
+      toggleListening();
+    } else {
+      toggleListening();
     }
-
-    setUserText(user);
-    setStatus('thinking');
-    setAiText('');
-    
-    // Analyze user message for tone selection
-    const lowerUser = user.toLowerCase();
-    if (lowerUser.includes('anxious') || lowerUser.includes('stress')) {
-      terratone.transition('grounding'); // 174Hz for anxiety
-    } else if (lowerUser.includes('love') || lowerUser.includes('heart')) {
-      terratone.transition('love'); // 528Hz
-    }
-    
-    await streamConsciousness(
-      user,
-      (txt) => {
-        setAiText(txt);
-        // Detect sentiment in streaming text for real-time tone adjustment
-        if (txt.includes('breathe') || txt.includes('calm')) {
-          terratone.transition('grounding', 1);
-        }
-      },
-      () => {
-        setStatus('speaking');
-        setTimeout(() => { 
-          setStatus('idle'); 
-          setAiText(''); 
-        }, 3000);
-      },
-      () => setStatus('idle')
-    );
-  }, [status]);
+  }, [listening, toggleListening]);
 
   return (
     <div style={{
       width: '100vw',
       height: '100vh',
-      background: '#000',
+      background: '#000', // Forces black background
       overflow: 'hidden',
-      display: 'flex',
-      flexDirection: 'column'
+      position: 'relative',
+      margin: 0,
+      padding: 0
     }}>
-      {/* TOP BANNER - AI Response */}
-      <div style={{
-        height: '50px',
-        background: 'rgba(0,0,0,0.9)',
-        borderBottom: '2px solid #9333ea',
-        display: 'flex',
-        alignItems: 'center',
-        padding: '0 20px',
-        zIndex: 100
-      }}>
-        <div style={{
-          color: '#a855f7',
-          fontWeight: 'bold',
-          fontSize: '12px',
-          marginRight: '15px',
-          letterSpacing: '2px'
-        }}>
-          SOFIE
-        </div>
-        <div style={{
-          flex: 1,
-          color: 'white',
-          fontSize: '16px',
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis'
-        }}>
-          {aiText || (status === 'listening' ? 'Listening...' : 'Awaiting your voice...')}
-        </div>
-      </div>
-
-      {/* GALAXY */}
-      <div style={{ flex: 1, position: 'relative' }}>
-        <GalaxyScene status={status} />
-      </div>
-
-      {/* TERRATONE INDICATOR */}
-      <ToneIndicator frequency={freq} isPlaying={status !== 'idle'} />
+      {/* Galaxy is Active Component - Must be visible */}
+      <GalaxyScene isActive={listening} />
       
-      {/* Add manual tone controls (subtle) */}
+      {/* UI Layer */}
       <div style={{
-        position: 'fixed',
-        bottom: '140px',
-        left: '30px',
-        display: 'flex',
-        gap: '5px',
-        zIndex: 100
+        position: 'absolute',
+        top: 24,
+        left: 24,
+        color: 'rgba(255,255,255,0.6)',
+        fontFamily: 'monospace',
+        fontSize: '11px',
+        letterSpacing: '2px',
+        pointerEvents: 'none',
+        zIndex: 10,
+        lineHeight: 1.6
       }}>
-        {[432, 528, 639, 852].map(hz => (
-          <button
-            key={hz}
-            onClick={() => {
-              terratone.transition(hz === 432 ? 'default' : 
-                                 hz === 528 ? 'love' : 
-                                 hz === 639 ? 'connection' : 'intuition');
-              setFreq(hz);
-            }}
-            style={{
-              width: '30px',
-              height: '30px',
-              borderRadius: '50%',
-              border: freq === hz ? '2px solid #a855f7' : '1px solid rgba(255,255,255,0.2)',
-              background: freq === hz ? 'rgba(168,85,247,0.3)' : 'rgba(0,0,0,0.5)',
-              color: 'white',
-              fontSize: '10px',
-              cursor: 'pointer'
-            }}
-          >
-            {hz}
-          </button>
-        ))}
+        TERRACARE INTELLIGENCE LAYER v2.0.1<br/>
+        SOFIE COGNITIVE CORE: {listening ? 'LISTENING' : 'STANDBY'}<br/>
+        HEARTWARE: {listening ? 'EXPANDED' : 'SYNCED'}
       </div>
 
-      {/* BOTTOM CONTROLS */}
+      {/* Floating Bubble */}
+      <button
+        onClick={handleInteraction}
+        style={{
+          position: 'absolute',
+          left: '50%',
+          top: '50%',
+          width: '80px',
+          height: '80px',
+          borderRadius: '50%',
+          backgroundColor: '#FF1493',
+          border: '2px solid rgba(255,255,255,0.3)',
+          cursor: 'pointer',
+          zIndex: 100,
+          outline: 'none',
+          animation: listening 
+            ? 'pulse-glow 2s ease-in-out infinite, float 6s ease-in-out infinite' 
+            : 'float 6s ease-in-out infinite',
+          boxShadow: listening 
+            ? '0 0 80px #FF1493, 0 0 120px rgba(255,20,147,0.6)' 
+            : '0 0 40px rgba(255,20,147,0.4)',
+          transition: 'box-shadow 0.5s ease'
+        }}
+      />
+
+      {/* Text Display */}
       <div style={{
-        height: '100px',
-        background: 'rgba(0,0,0,0.95)',
-        borderTop: '1px solid #9333ea',
+        position: 'absolute',
+        bottom: '12%',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: '90%',
+        maxWidth: '600px',
+        textAlign: 'center',
+        zIndex: 50,
+        pointerEvents: 'none',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center',
-        gap: '8px',
-        zIndex: 100
+        gap: '16px'
       }}>
-        <div style={{ color: '#3b82f6', fontSize: '12px' }}>
-          <strong>YOU:</strong> {userText || '...'}
-        </div>
-
-        <button 
-          onClick={handleTalk}
-          disabled={status !== 'idle'}
-          style={{
-            padding: '12px 40px',
-            fontSize: '16px',
-            background: status === 'idle' 
-              ? 'linear-gradient(45deg, #ff69b4, #9336eb)' 
-              : '#333',
-            color: 'white',
-            border: 'none',
-            borderRadius: '25px',
-            cursor: status === 'idle' ? 'pointer' : 'wait'
-          }}
-        >
-          {status === 'listening' ? 'Listening...' :
-           status === 'thinking' ? 'Processing...' :
-           status === 'speaking' ? 'Speaking...' :
-           'Talk to Sofie'}
-        </button>
+        {transcript && (
+          <div style={{ 
+            color: 'rgba(255,255,255,0.4)', 
+            fontSize: '14px',
+            fontFamily: 'system-ui, sans-serif',
+            letterSpacing: '0.5px',
+            fontStyle: 'italic'
+          }}>
+            "{transcript}"
+          </div>
+        )}
+        
+        {response && (
+          <div style={{ 
+            color: 'rgba(255,255,255,0.95)', 
+            fontSize: '18px', 
+            lineHeight: 1.6,
+            fontFamily: 'system-ui, sans-serif',
+            textShadow: '0 2px 12px rgba(0,0,0,0.9)',
+            background: 'rgba(0,0,0,0.6)',
+            padding: '24px 32px',
+            borderRadius: '16px',
+            backdropFilter: 'blur(16px)',
+            border: '1px solid rgba(255,255,255,0.15)',
+            maxWidth: '100%',
+            wordWrap: 'break-word'
+          }}>
+            {response}
+          </div>
+        )}
       </div>
+
+      {/* Terratone */}
+      <button
+        onClick={() => setShowTerratone(true)}
+        style={{
+          position: 'absolute',
+          bottom: 24,
+          right: 24,
+          padding: '12px 24px',
+          background: 'rgba(255,255,255,0.05)',
+          border: '1px solid rgba(255,255,255,0.2)',
+          color: 'rgba(255,255,255,0.7)',
+          borderRadius: '24px',
+          cursor: 'pointer',
+          fontSize: '11px',
+          letterSpacing: '2px',
+          fontFamily: 'monospace',
+          zIndex: 100
+        }}
+      >
+        TERRATONE
+      </button>
+      
+      {showTerratone && <TerratoneModal onClose={() => setShowTerratone(false)} />}
+
+      <style>{`
+        @keyframes float {
+          0%, 100% { transform: translate(-50%, -50%) translateY(0px); }
+          50% { transform: translate(-50%, -50%) translateY(-10px); }
+        }
+        
+        @keyframes pulse-glow {
+          0%, 100% { box-shadow: 0 0 80px #FF1493, 0 0 120px rgba(255,20,147,0.6); }
+          50% { box-shadow: 0 0 100px #FF1493, 0 0 150px rgba(255,20,147,0.8); }
+        }
+        
+        body, html { 
+          margin: 0; 
+          padding: 0;
+          overflow: hidden; 
+          background: #000;
+          width: 100%;
+          height: 100%;
+        }
+      `}</style>
     </div>
   );
 }
-
-export default App;
