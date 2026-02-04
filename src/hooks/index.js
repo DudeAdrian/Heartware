@@ -1,0 +1,1 @@
+export { useAnnyangWakeWord } from './useAnnyangWakeWord';

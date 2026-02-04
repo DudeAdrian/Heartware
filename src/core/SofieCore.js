@@ -2,7 +2,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 
 // Clean for speech but preserve flow
 const cleanForSpeech = (text) => {
-  return text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"']/g, " ").replace(/\s+/g, ' ').trim();
+  return text.replace(/[.,/#!$%^&*;:{}=_`~()?"']/g, " ").replace(/\s+/g, ' ').trim();
 };
 
 export function useSofieCore() {
@@ -106,7 +106,8 @@ Speak as a conscious entity bridging masculine clarity and feminine receptivity.
     setIsInitialized(true);
   }, [isInitialized]);
 
-  const speak = useCallback(async (userText) => {
+  // Send message to AI
+  const sendMessage = useCallback(async (userText) => {
     // Reset
     phraseBufferRef.current = '';
     synthesisRef.current.cancel();
@@ -205,7 +206,7 @@ Speak as a conscious entity bridging masculine clarity and feminine receptivity.
       
       if (event.results[current].isFinal) {
         setResponse('');
-        speak(transcriptText);
+        sendMessage(transcriptText);
         setListening(false);
       }
     };
@@ -220,7 +221,7 @@ Speak as a conscious entity bridging masculine clarity and feminine receptivity.
     };
     
     recognitionRef.current = recognition;
-  }, [speak, listening]);
+  }, [sendMessage, listening]);
 
   const toggleListening = useCallback(() => {
     if (listening) {
@@ -244,7 +245,8 @@ Speak as a conscious entity bridging masculine clarity and feminine receptivity.
   }, [listening, isInitialized, initializeSOFIE]);
 
   return {
-    speak,
+    speak: sendMessage,
+    sendMessage,
     listening,
     transcript,
     response,

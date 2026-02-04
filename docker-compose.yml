@@ -1,9 +1,108 @@
-﻿version: '3.8'
+# ╔════════════════════════════════════════════════════════════════════════════╗
+# ║  DOCKER COMPOSE - TERRACARE SOVEREIGTY STACK                              ║
+# ║  Heartware Chamber 5 + Terracare Ledger Integration                       ║
+# ╚════════════════════════════════════════════════════════════════════════════╝
+
+version: '3.8'
 
 services:
+  # ═══════════════════════════════════════════════════════════════════════════
+  # HEARTWARE UI - Chamber 5: The Interface
+  # ═══════════════════════════════════════════════════════════════════════════
   heartware:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: heartware-ui
     ports:
       - "3000:80"
     environment:
-      - REACT_APP_API_URL=http://localhost:8001
+      # Terracare Ledger Connection
+      - REACT_APP_TERRACARE_RPC_URL=http://terracare-ledger:8545
+      - REACT_APP_CHAIN_ID=1337
+      - REACT_APP_ENV=development
+      
+      # Core Contract Addresses
+      - REACT_APP_SOVEREIGN_IDENTITY=0x0B306BF915C4d645ff596e518fAf3F9669b97016
+      - REACT_APP_ACCESS_GOVERNOR=0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1
+      - REACT_APP_AUDIT_TRAIL=0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE
+      
+      # Chamber Adapter Addresses
+      - REACT_APP_THOLOS_ADAPTER=0x68B1D87F95878fE05B998F19b66F4baba5De1aed
+      - REACT_APP_HARMONIC_ADAPTER=0x3Aa5ebB10DC797CAC828524e59A333d0A371443c
+      - REACT_APP_TERRATONE_ADAPTER=0xc6e7DF5E7b4f2A278906862b61205850344D4e7d
+      - REACT_APP_SOFIE_OS_ADAPTER=0x59b670e9fA9D0A427751Af201D676719a970857b
+      - REACT_APP_LLAMA_ADAPTER=0x4ed7c70F96B99c776995fB64377f0d4aB3B0e1C1
+      - REACT_APP_MAP_ADAPTER=0x322813Fd9A801c5507c9de605d63CEA4f2CE6c44
+      
+      # Service Endpoints
+      - REACT_APP_RELAYER_URL=http://terracare-relayer:3001/relay
+      - REACT_APP_LEDGER_WS_URL=ws://terracare-relayer:3002/events
+      - REACT_APP_SOFIE_LLM_URL=http://sofie-llm:8001
+      
+    networks:
+      - terracare-network
+    depends_on:
+      - terracare-ledger
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # TERRACARE LEDGER - Chamber 1: The Blockchain
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Uncomment when local ledger is available
+  # terracare-ledger:
+  #   image: ghcr.io/terracare/ledger:latest
+  #   container_name: terracare-ledger
+  #   ports:
+  #     - "8545:8545"
+  #   volumes:
+  #     - terracare-data:/data
+  #   networks:
+  #     - terracare-network
+  #   restart: unless-stopped
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # TERRACARE RELAYER - ERC-2771 Meta-Transaction Service
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Uncomment when relayer is available
+  # terracare-relayer:
+  #   image: ghcr.io/terracare/relayer:latest
+  #   container_name: terracare-relayer
+  #   ports:
+  #     - "3001:3001"
+  #     - "3002:3002"
+  #   environment:
+  #     - LEDGER_RPC=http://terracare-ledger:8545
+  #     - RELAYER_PRIVATE_KEY=${RELAYER_PRIVATE_KEY}
+  #   networks:
+  #     - terracare-network
+  #   depends_on:
+  #     - terracare-ledger
+  #   restart: unless-stopped
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # SOFIE LLM - Chamber 3: The Voice
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Uncomment when LLM backend is available
+  # sofie-llm:
+  #   image: ghcr.io/terracare/sofie-llm:latest
+  #   container_name: sofie-llm
+  #   ports:
+  #     - "8001:8001"
+  #   networks:
+  #     - terracare-network
+  #   restart: unless-stopped
+
+networks:
+  terracare-network:
+    driver: bridge
+
+volumes:
+  terracare-data:
+    driver: local
