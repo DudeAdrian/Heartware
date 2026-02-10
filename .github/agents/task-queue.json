@@ -1,0 +1,68 @@
+{
+  "queue_version": "1.0.0",
+  "last_updated": "2026-02-10T05:00:00Z",
+  "tasks": {
+    "pending": [
+      {
+        "id": "task-001",
+        "agent": "test",
+        "title": "Add tests for SofieCore.js",
+        "description": "Add unit tests for useSofieCore hook",
+        "files": ["src/core/SofieCore.js"],
+        "estimated_time": "30 minutes",
+        "priority": "high",
+        "created": "2026-02-10T05:00:00Z"
+      },
+      {
+        "id": "task-002",
+        "agent": "doc",
+        "title": "Document SOFIE CLI",
+        "description": "Add README.md for cli/ directory",
+        "files": ["cli/README.md"],
+        "estimated_time": "15 minutes",
+        "priority": "medium",
+        "created": "2026-02-10T05:00:00Z"
+      },
+      {
+        "id": "task-003",
+        "agent": "security",
+        "title": "Scan for hardcoded secrets",
+        "description": "Check all JS files for API keys, tokens",
+        "files": ["**/*.js"],
+        "estimated_time": "20 minutes",
+        "priority": "critical",
+        "created": "2026-02-10T05:00:00Z"
+      },
+      {
+        "id": "task-004",
+        "agent": "architect",
+        "title": "Review component architecture",
+        "description": "Assess src/components structure for improvements",
+        "files": ["src/components/**/*"],
+        "estimated_time": "45 minutes",
+        "priority": "medium",
+        "created": "2026-02-10T05:00:00Z"
+      },
+      {
+        "id": "task-005",
+        "agent": "refactor",
+        "title": "Simplify complex functions",
+        "description": "Identify and refactor functions >50 lines",
+        "files": ["src/**/*.js"],
+        "estimated_time": "30 minutes",
+        "priority": "low",
+        "created": "2026-02-10T05:00:00Z"
+      }
+    ],
+    "in_progress": [],
+    "completed": [],
+    "failed": []
+  },
+  "metrics": {
+    "total_tasks_created": 5,
+    "total_completed": 0,
+    "total_failed": 0,
+    "average_completion_time": null,
+    "success_rate": null
+  }
+}
