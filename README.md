@@ -9,6 +9,19 @@ React-based Sovereign AI Companion with Galaxy visualization, voice conversation
 
 ---
 
+## 📊 Repository Analysis Available
+
+**Looking for the detailed deep dive?** Complete ecosystem analysis is available:
+
+- 🔬 **[SANDIRONRATIO_NODE_DEEP_DIVE.md](./SANDIRONRATIO_NODE_DEEP_DIVE.md)** - 50KB comprehensive technical analysis
+- ⭐ **[EXECUTIVE_SUMMARY.md](./EXECUTIVE_SUMMARY.md)** - Strategic overview & recommendations
+- 🌐 **[DUDEADRIAN_ECOSYSTEM_OVERVIEW.md](./DUDEADRIAN_ECOSYSTEM_OVERVIEW.md)** - All 20 repos analyzed
+- 📋 **[ANALYSIS_INDEX.md](./ANALYSIS_INDEX.md)** - Quick navigation guide
+
+**[→ Start Here: Analysis Index](./ANALYSIS_INDEX.md)** for full navigation
+
+---
+
 ## Seven Pillar Mapping
 
 | Pillar | Component | File/Module | Function |

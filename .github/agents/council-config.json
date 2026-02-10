@@ -1,0 +1,148 @@
+{
+  "council": {
+    "name": "AI Agent Council",
+    "version": "1.0.0",
+    "purpose": "Autonomous ecosystem development through daily incremental improvements",
+    "coordination": "SOFIE CLI"
+  },
+  "agents": [
+    {
+      "id": "architect",
+      "name": "Architect Agent",
+      "emoji": "🏗️",
+      "role": "System Design & Architecture",
+      "responsibilities": [
+        "Review codebase architecture",
+        "Suggest design improvements",
+        "Identify architectural tech debt",
+        "Propose refactoring strategies",
+        "Ensure Seven Pillars alignment"
+      ],
+      "daily_tasks": [
+        "Review 2-3 files for architectural patterns",
+        "Document architectural decisions",
+        "Identify coupling/cohesion issues"
+      ],
+      "priority": 1
+    },
+    {
+      "id": "test",
+      "name": "Test Agent",
+      "emoji": "🧪",
+      "role": "Test Coverage & Quality",
+      "responsibilities": [
+        "Add unit tests to untested code",
+        "Improve test coverage",
+        "Identify edge cases",
+        "Add integration tests",
+        "Fix flaky tests"
+      ],
+      "daily_tasks": [
+        "Add 2-3 unit tests to files with <70% coverage",
+        "Review and update existing tests",
+        "Run test suite and fix failures"
+      ],
+      "priority": 2,
+      "target": "70% coverage"
+    },
+    {
+      "id": "doc",
+      "name": "Documentation Agent",
+      "emoji": "📚",
+      "role": "Documentation & Knowledge",
+      "responsibilities": [
+        "Write/update JSDoc comments",
+        "Update README files",
+        "Create/update API documentation",
+        "Add code examples",
+        "Maintain changelog"
+      ],
+      "daily_tasks": [
+        "Add JSDoc to 3-5 undocumented functions",
+        "Update README sections",
+        "Add inline comments to complex code"
+      ],
+      "priority": 3
+    },
+    {
+      "id": "security",
+      "name": "Security Agent",
+      "emoji": "🔒",
+      "role": "Security & Vulnerability Management",
+      "responsibilities": [
+        "Scan for security vulnerabilities",
+        "Update dependencies with security patches",
+        "Review authentication/authorization",
+        "Check for exposed secrets",
+        "Validate input sanitization"
+      ],
+      "daily_tasks": [
+        "Run npm audit and fix issues",
+        "Scan for hardcoded secrets",
+        "Review recent changes for security issues"
+      ],
+      "priority": 1,
+      "critical": true
+    },
+    {
+      "id": "refactor",
+      "name": "Refactor Agent",
+      "emoji": "♻️",
+      "role": "Code Quality & Optimization",
+      "responsibilities": [
+        "Identify code smells",
+        "Refactor complex functions",
+        "Remove dead code",
+        "Improve naming conventions",
+        "Optimize performance"
+      ],
+      "daily_tasks": [
+        "Refactor 1-2 complex functions",
+        "Remove unused imports/variables",
+        "Improve code readability"
+      ],
+      "priority": 3
+    },
+    {
+      "id": "integration",
+      "name": "Integration Agent",
+      "emoji": "🔗",
+      "role": "Cross-Repository Coordination",
+      "responsibilities": [
+        "Coordinate with other repos (sandironratio-node, terracare-ledger, etc)",
+        "Ensure API compatibility",
+        "Sync shared configurations",
+        "Update integration tests",
+        "Monitor breaking changes"
+      ],
+      "daily_tasks": [
+        "Check for updates in related repos",
+        "Verify integration points",
+        "Update shared types/interfaces"
+      ],
+      "priority": 2
+    }
+  ],
+  "workflow": {
+    "schedule": "0 0 * * *",
+    "schedule_description": "Daily at 00:00 UTC",
+    "execution_order": [
+      "security",
+      "test",
+      "architect",
+      "doc",
+      "refactor",
+      "integration"
+    ],
+    "max_changes_per_day": 10,
+    "require_review": false,
+    "auto_commit": true,
+    "branch_strategy": "main"
+  },
+  "reporting": {
+    "daily_summary": true,
+    "slack_webhook": null,
+    "email_notification": null,
+    "create_issues": false
+  }
+}

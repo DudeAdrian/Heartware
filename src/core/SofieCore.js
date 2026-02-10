@@ -126,7 +126,7 @@ Speak as a conscious entity bridging masculine clarity and feminine receptivity.
     setResponse('');
     
     try {
-      const res = await fetch('http://localhost:8001/completion', {
+      const res = await fetch('/api/sofie/completion', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -181,7 +181,7 @@ Speak as a conscious entity bridging masculine clarity and feminine receptivity.
       
     } catch (error) {
       console.error('SOFIE Error:', error);
-      const fallback = "I am S.O.F.I.E. My connection to the TerraCare node requires attention. Please verify localhost:8001.";
+      const fallback = "I am S.O.F.I.E. My connection to the TerraCare node requires attention. Please verify the unified server is running.";
       setResponse(fallback);
       
       const utterance = new SpeechSynthesisUtterance(fallback);
